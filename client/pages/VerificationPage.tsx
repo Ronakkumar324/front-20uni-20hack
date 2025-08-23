@@ -250,13 +250,13 @@ export default function VerificationPage() {
                                 <CheckCircle className="h-5 w-5 text-green-500" />
                               )}
                             </CardTitle>
-                            <CardDescription className="flex items-center space-x-2 mt-1">
+                            <div className="flex items-center space-x-2 mt-1 text-sm text-muted-foreground">
                               <Building className="h-4 w-4" />
                               <span>{credential.issuer}</span>
                               <Separator orientation="vertical" className="h-4" />
                               <Calendar className="h-4 w-4" />
                               <span>{new Date(credential.date).toLocaleDateString()}</span>
-                            </CardDescription>
+                            </div>
                           </div>
                         </div>
                         <div className="flex items-center space-x-2">
