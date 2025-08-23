@@ -10,7 +10,13 @@ import IssuerDashboard from "./pages/IssuerDashboard";
 import VerificationPage from "./pages/VerificationPage";
 import NotFound from "./pages/NotFound";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 2,
+    },
+  },
+});
 
 export default function App() {
   return (
