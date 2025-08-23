@@ -35,4 +35,16 @@ function App() {
   );
 }
 
-createRoot(document.getElementById("root")!).render(<App />);
+// Ensure createRoot is only called once, even during HMR
+const container = document.getElementById("root")!;
+
+// Store root in a global variable to prevent recreation during HMR
+declare global {
+  var __reactRoot: ReturnType<typeof createRoot> | undefined;
+}
+
+if (!globalThis.__reactRoot) {
+  globalThis.__reactRoot = createRoot(container);
+}
+
+globalThis.__reactRoot.render(<App />);
