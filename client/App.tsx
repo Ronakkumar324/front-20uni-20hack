@@ -1,6 +1,4 @@
-import "./global.css";
 import React from "react";
-import { createRoot } from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,7 +12,7 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-function App() {
+export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
@@ -34,20 +32,3 @@ function App() {
     </QueryClientProvider>
   );
 }
-
-// Initialize React app
-const container = document.getElementById("root")!;
-
-// Store root in a global variable to prevent recreation during HMR
-declare global {
-  var __reactRoot: ReturnType<typeof createRoot> | undefined;
-}
-
-// Create root only once, reuse during HMR
-let root = globalThis.__reactRoot;
-if (!root) {
-  root = globalThis.__reactRoot = createRoot(container);
-}
-
-// Render the app
-root.render(<App />);
