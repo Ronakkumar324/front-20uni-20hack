@@ -1,22 +1,28 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { 
-  Shield, 
-  Award, 
-  ExternalLink, 
-  Calendar, 
-  Building, 
+import {
+  Shield,
+  Award,
+  ExternalLink,
+  Calendar,
+  Building,
   QrCode,
   Wallet,
   Trophy,
   BookOpen,
   Code,
-  Users
+  Users,
 } from "lucide-react";
 
 // Mock data for demonstration
@@ -28,16 +34,17 @@ const mockCredentials = [
     issuerLogo: "/placeholder.svg",
     date: "2024-01-15",
     type: "Certificate",
-    description: "Advanced React development skills including hooks, state management, and testing",
+    description:
+      "Advanced React development skills including hooks, state management, and testing",
     eventLink: "https://techacademy.com/certificates/react-dev-2024",
     metadata: {
       courseHours: "40",
       grade: "A+",
-      skills: ["React", "TypeScript", "Testing"]
-    }
+      skills: ["React", "TypeScript", "Testing"],
+    },
   },
   {
-    id: "2", 
+    id: "2",
     title: "Blockchain Hackathon Winner",
     issuer: "CryptoHack 2024",
     issuerLogo: "/placeholder.svg",
@@ -48,24 +55,25 @@ const mockCredentials = [
     metadata: {
       placement: "1st Place",
       team: "4 members",
-      prize: "$10,000"
-    }
+      prize: "$10,000",
+    },
   },
   {
     id: "3",
     title: "Full Stack Development Bootcamp",
     issuer: "CodeUniversity",
-    issuerLogo: "/placeholder.svg", 
+    issuerLogo: "/placeholder.svg",
     date: "2023-12-10",
     type: "Course Completion",
-    description: "Comprehensive full-stack development program covering frontend and backend technologies",
+    description:
+      "Comprehensive full-stack development program covering frontend and backend technologies",
     eventLink: "https://codeuniversity.edu/bootcamp",
     metadata: {
       duration: "12 weeks",
       grade: "Distinction",
-      projects: "5 completed"
-    }
-  }
+      projects: "5 completed",
+    },
+  },
 ];
 
 export default function StudentDashboard() {
@@ -119,22 +127,37 @@ export default function StudentDashboard() {
             <div className="flex items-center space-x-2">
               <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-8 w-8 text-primary" />
-                <span className="font-bold text-xl text-gray-900">CredVault</span>
+                <span className="font-bold text-xl text-gray-900">
+                  CredVault
+                </span>
               </Link>
-              <Badge variant="secondary" className="ml-2">Student</Badge>
+              <Badge variant="secondary" className="ml-2">
+                Student
+              </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/verify" className="text-gray-700 hover:text-primary">Verify</Link>
-              <Link to="/issuer" className="text-gray-700 hover:text-primary">Issuer</Link>
+              <Link to="/verify" className="text-gray-700 hover:text-primary">
+                Verify
+              </Link>
+              <Link to="/issuer" className="text-gray-700 hover:text-primary">
+                Issuer
+              </Link>
               {isConnected ? (
                 <div className="flex items-center space-x-2">
                   <span className="text-sm text-gray-600">{walletAddress}</span>
-                  <Button variant="outline" size="sm" onClick={disconnectWallet}>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={disconnectWallet}
+                  >
                     Disconnect
                   </Button>
                 </div>
               ) : (
-                <Button onClick={connectWallet} className="bg-primary hover:bg-primary/90">
+                <Button
+                  onClick={connectWallet}
+                  className="bg-primary hover:bg-primary/90"
+                >
                   <Wallet className="h-4 w-4 mr-2" />
                   Connect Wallet
                 </Button>
@@ -150,11 +173,18 @@ export default function StudentDashboard() {
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">
               <Wallet className="h-16 w-16 text-gray-400 mx-auto mb-6" />
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Connect Your Wallet</h2>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                Connect Your Wallet
+              </h2>
               <p className="text-gray-600 mb-8">
-                Connect your Aptos wallet to view your credential collection and manage your achievements.
+                Connect your Aptos wallet to view your credential collection and
+                manage your achievements.
               </p>
-              <Button onClick={connectWallet} size="lg" className="bg-primary hover:bg-primary/90">
+              <Button
+                onClick={connectWallet}
+                size="lg"
+                className="bg-primary hover:bg-primary/90"
+              >
                 <Wallet className="h-5 w-5 mr-2" />
                 Connect Petra or Martian Wallet
               </Button>
@@ -171,11 +201,13 @@ export default function StudentDashboard() {
                   <AvatarFallback>ST</AvatarFallback>
                 </Avatar>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900">My Credentials</h1>
+                  <h1 className="text-3xl font-bold text-gray-900">
+                    My Credentials
+                  </h1>
                   <p className="text-gray-600">Wallet: {walletAddress}</p>
                 </div>
               </div>
-              
+
               {/* Stats */}
               <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                 <Card>
@@ -183,48 +215,62 @@ export default function StudentDashboard() {
                     <div className="flex items-center space-x-2">
                       <Shield className="h-8 w-8 text-primary" />
                       <div>
-                        <p className="text-2xl font-bold">{credentials.length}</p>
-                        <p className="text-sm text-gray-600">Total Credentials</p>
+                        <p className="text-2xl font-bold">
+                          {credentials.length}
+                        </p>
+                        <p className="text-sm text-gray-600">
+                          Total Credentials
+                        </p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
                       <Award className="h-8 w-8 text-blue-500" />
                       <div>
                         <p className="text-2xl font-bold">
-                          {credentials.filter(c => c.type === "Certificate").length}
+                          {
+                            credentials.filter((c) => c.type === "Certificate")
+                              .length
+                          }
                         </p>
                         <p className="text-sm text-gray-600">Certificates</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
                       <Trophy className="h-8 w-8 text-yellow-500" />
                       <div>
                         <p className="text-2xl font-bold">
-                          {credentials.filter(c => c.type === "Achievement").length}
+                          {
+                            credentials.filter((c) => c.type === "Achievement")
+                              .length
+                          }
                         </p>
                         <p className="text-sm text-gray-600">Achievements</p>
                       </div>
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card>
                   <CardContent className="p-4">
                     <div className="flex items-center space-x-2">
                       <BookOpen className="h-8 w-8 text-green-500" />
                       <div>
                         <p className="text-2xl font-bold">
-                          {credentials.filter(c => c.type === "Course Completion").length}
+                          {
+                            credentials.filter(
+                              (c) => c.type === "Course Completion",
+                            ).length
+                          }
                         </p>
                         <p className="text-sm text-gray-600">Courses</p>
                       </div>
@@ -250,17 +296,23 @@ export default function StudentDashboard() {
                 <Card>
                   <CardContent className="p-8 text-center">
                     <Award className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">No Credentials Yet</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                      No Credentials Yet
+                    </h3>
                     <p className="text-gray-600 mb-4">
-                      Start earning credentials by completing courses, participating in events, 
-                      or achieving certifications from verified issuers.
+                      Start earning credentials by completing courses,
+                      participating in events, or achieving certifications from
+                      verified issuers.
                     </p>
                   </CardContent>
                 </Card>
               ) : (
                 <div className="grid gap-6">
                   {credentials.map((credential) => (
-                    <Card key={credential.id} className="border-2 hover:border-primary/20 transition-colors">
+                    <Card
+                      key={credential.id}
+                      className="border-2 hover:border-primary/20 transition-colors"
+                    >
                       <CardHeader>
                         <div className="flex items-start justify-between">
                           <div className="flex items-center space-x-4">
@@ -271,13 +323,22 @@ export default function StudentDashboard() {
                               </AvatarFallback>
                             </Avatar>
                             <div>
-                              <CardTitle className="text-xl">{credential.title}</CardTitle>
+                              <CardTitle className="text-xl">
+                                {credential.title}
+                              </CardTitle>
                               <div className="flex items-center space-x-2 mt-1 text-sm text-muted-foreground">
                                 <Building className="h-4 w-4" />
                                 <span>{credential.issuer}</span>
-                                <Separator orientation="vertical" className="h-4" />
+                                <Separator
+                                  orientation="vertical"
+                                  className="h-4"
+                                />
                                 <Calendar className="h-4 w-4" />
-                                <span>{new Date(credential.date).toLocaleDateString()}</span>
+                                <span>
+                                  {new Date(
+                                    credential.date,
+                                  ).toLocaleDateString()}
+                                </span>
                               </div>
                             </div>
                           </div>
@@ -289,30 +350,41 @@ export default function StudentDashboard() {
                           </div>
                         </div>
                       </CardHeader>
-                      
+
                       <CardContent>
-                        <p className="text-gray-600 mb-4">{credential.description}</p>
-                        
+                        <p className="text-gray-600 mb-4">
+                          {credential.description}
+                        </p>
+
                         {/* Metadata */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
-                          {Object.entries(credential.metadata).map(([key, value]) => (
-                            <div key={key} className="bg-gray-50 p-3 rounded-lg">
-                              <p className="text-sm font-medium text-gray-900 capitalize">
-                                {key.replace(/([A-Z])/g, ' $1').trim()}
-                              </p>
-                              <p className="text-sm text-gray-600">{value}</p>
-                            </div>
-                          ))}
+                          {Object.entries(credential.metadata).map(
+                            ([key, value]) => (
+                              <div
+                                key={key}
+                                className="bg-gray-50 p-3 rounded-lg"
+                              >
+                                <p className="text-sm font-medium text-gray-900 capitalize">
+                                  {key.replace(/([A-Z])/g, " $1").trim()}
+                                </p>
+                                <p className="text-sm text-gray-600">{value}</p>
+                              </div>
+                            ),
+                          )}
                         </div>
-                        
+
                         <div className="flex justify-between items-center">
                           <Button variant="outline" size="sm" asChild>
-                            <a href={credential.eventLink} target="_blank" rel="noopener noreferrer">
+                            <a
+                              href={credential.eventLink}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
                               <ExternalLink className="h-4 w-4 mr-2" />
                               View Details
                             </a>
                           </Button>
-                          
+
                           <div className="flex space-x-2">
                             <Button variant="outline" size="sm">
                               <QrCode className="h-4 w-4 mr-2" />
