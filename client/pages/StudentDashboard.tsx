@@ -82,6 +82,8 @@ export default function StudentDashboard() {
   const [isConnected, setIsConnected] = useState(false);
   const [walletAddress, setWalletAddress] = useState("");
   const [credentials, setCredentials] = useState(mockCredentials);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
+  const [selectedCredential, setSelectedCredential] = useState<typeof mockCredentials[0] | null>(null);
 
   const connectWallet = async () => {
     // Mock wallet connection - in real app would use Aptos wallet adapter
