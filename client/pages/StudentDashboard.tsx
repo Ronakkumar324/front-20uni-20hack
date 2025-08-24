@@ -96,6 +96,34 @@ export default function StudentDashboard() {
     setWalletAddress("");
   };
 
+  const handleGenerateQR = (credential: typeof mockCredentials[0]) => {
+    setSelectedCredential(credential);
+    setQrModalOpen(true);
+  };
+
+  const handleShare = async (credential: typeof mockCredentials[0]) => {
+    const shareData = {
+      title: `${credential.title} - CredVault`,
+      text: `Check out my ${credential.type}: ${credential.title} issued by ${credential.issuer}`,
+      url: `${window.location.origin}/verify?address=${walletAddress}&credentialId=${credential.id}`
+    };
+
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (error) {
+        console.error('Share failed:', error);
+        // Fallback to copying URL
+        navigator.clipboard.writeText(shareData.url);
+        alert('Verification URL copied to clipboard!');
+      }
+    } else {
+      // Fallback for browsers without Web Share API
+      navigator.clipboard.writeText(shareData.url);
+      alert('Verification URL copied to clipboard!');
+    }
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "Certificate":
