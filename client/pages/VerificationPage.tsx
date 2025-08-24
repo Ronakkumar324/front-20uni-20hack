@@ -444,6 +444,14 @@ export default function VerificationPage() {
           </div>
         )}
       </div>
+
+      {/* QR Code Modal */}
+      <QRModal
+        isOpen={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        credential={selectedCredential}
+        walletAddress={searchAddress}
+      />
     </div>
   );
 }
