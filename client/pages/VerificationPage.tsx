@@ -354,7 +354,7 @@ export default function VerificationPage() {
                             variant="ghost"
                             size="sm"
                             onClick={() =>
-                              copyToClipboard(credential.onChainAddress)
+                              copyToClipboardLocal(credential.onChainAddress)
                             }
                           >
                             <Copy className="h-3 w-3" />
