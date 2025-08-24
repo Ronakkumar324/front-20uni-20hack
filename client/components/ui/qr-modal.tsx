@@ -74,20 +74,26 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
   const copyVerificationUrl = async () => {
     if (!credential || !walletAddress) return;
 
-    const verificationUrl = `${window.location.origin}/verify?address=${walletAddress}&credentialId=${credential.id}`;
+    try {
+      const verificationData = generateQRVerificationData(credential, walletAddress);
+      const result = await copyToClipboard(verificationData.url);
 
-    const result = await copyToClipboard(verificationUrl);
+      if (result.success) {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
 
-    if (result.success) {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
-
-      toast.success("Copied!", {
-        description: getClipboardMessage(result)
-      });
-    } else {
-      toast.error("Copy failed", {
-        description: "Please copy the URL manually from the browser address bar or try again."
+        toast.success("Copied!", {
+          description: getClipboardMessage(result)
+        });
+      } else {
+        toast.error("Copy failed", {
+          description: "Please copy the URL manually or try again."
+        });
+      }
+    } catch (error) {
+      const errorMessage = handleUrlError(error);
+      toast.error("URL Generation Failed", {
+        description: errorMessage
       });
     }
   };
