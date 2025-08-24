@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
+import { QRModal } from "@/components/ui/qr-modal";
 import {
   Shield,
   Award,
@@ -23,6 +24,7 @@ import {
   BookOpen,
   Code,
   Users,
+  Share,
 } from "lucide-react";
 
 // Mock data for demonstration
