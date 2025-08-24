@@ -338,11 +338,9 @@ export default function StudentDashboard() {
             <div className="space-y-6">
               <div className="flex justify-between items-center">
                 <h2 className="text-xl font-semibold">Credential Collection</h2>
-                <Button variant="outline" asChild>
-                  <Link to="/verify">
-                    <QrCode className="h-4 w-4 mr-2" />
-                    Share Profile
-                  </Link>
+                <Button variant="outline" onClick={handleShareProfile}>
+                  <QrCode className="h-4 w-4 mr-2" />
+                  Share Profile
                 </Button>
               </div>
 
