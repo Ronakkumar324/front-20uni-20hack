@@ -107,8 +107,17 @@ export default function VerificationPage() {
     }
   }, []);
 
-  const handleSearch = async () => {
-    if (!searchAddress.trim()) return;
+  const handleSearch = async (addressOverride?: string) => {
+    const addressToSearch = addressOverride || searchAddress;
+
+    if (!addressToSearch.trim()) return;
+
+    if (!isValidWalletAddress(addressToSearch)) {
+      toast.error("Invalid Address", {
+        description: "Please enter a valid wallet address."
+      });
+      return;
+    }
 
     setIsSearching(true);
     setHasSearched(true);
@@ -119,11 +128,21 @@ export default function VerificationPage() {
 
       const results =
         mockVerificationResults[
-          searchAddress as keyof typeof mockVerificationResults
+          addressToSearch as keyof typeof mockVerificationResults
         ] || [];
       setSearchResults(results);
+
+      // Show success message for URL-based searches
+      if (addressOverride && results.length > 0) {
+        toast.success("Credentials Found", {
+          description: `Found ${results.length} credential(s) for this address.`
+        });
+      }
     } catch (error) {
       setSearchResults([]);
+      toast.error("Search Failed", {
+        description: "Unable to search for credentials. Please try again."
+      });
     } finally {
       setIsSearching(false);
     }
