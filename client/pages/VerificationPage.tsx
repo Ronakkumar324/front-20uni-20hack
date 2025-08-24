@@ -127,14 +127,14 @@ export default function VerificationPage() {
     setQrModalOpen(true);
   };
 
-  const copyToClipboard = async (text: string) => {
-    try {
-      await navigator.clipboard.writeText(text);
+  const copyToClipboardLocal = async (text: string) => {
+    const result = await copyToClipboard(text);
+
+    if (result.success) {
       toast.success("Copied to clipboard!", {
-        description: "The verification URL has been copied to your clipboard."
+        description: getClipboardMessage(result)
       });
-    } catch (error) {
-      console.error('Failed to copy:', error);
+    } else {
       toast.error("Failed to copy", {
         description: "Please try selecting and copying the text manually."
       });
