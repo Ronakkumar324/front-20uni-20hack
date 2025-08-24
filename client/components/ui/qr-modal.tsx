@@ -204,7 +204,9 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
                 Share
               </Button>
             </div>
-            
+
+            <ClipboardHelp className="text-center" />
+
             <Button onClick={onClose} className="w-full">
               Close
             </Button>
