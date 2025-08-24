@@ -105,8 +105,8 @@ export default function VerificationPage() {
   };
 
   const generateQRForCredential = (credential: any) => {
-    // Mock QR generation - in real app would generate actual QR code
-    alert(`QR code generated for: ${credential.title}`);
+    setSelectedCredential(credential);
+    setQrModalOpen(true);
   };
 
   const copyToClipboard = (text: string) => {
