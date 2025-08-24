@@ -126,9 +126,18 @@ export default function VerificationPage() {
     setQrModalOpen(true);
   };
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    alert("Copied to clipboard!");
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      toast.success("Copied to clipboard!", {
+        description: "The verification URL has been copied to your clipboard."
+      });
+    } catch (error) {
+      console.error('Failed to copy:', error);
+      toast.error("Failed to copy", {
+        description: "Please try selecting and copying the text manually."
+      });
+    }
   };
 
   const getTypeIcon = (type: string) => {
