@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Download, Share2, CheckCircle } from "lucide-react";
 import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
+import { ClipboardHelp } from "@/components/ui/clipboard-status";
 import { toast } from "sonner";
 
 interface Credential {
