@@ -418,11 +418,20 @@ export default function StudentDashboard() {
                           </Button>
 
                           <div className="flex space-x-2">
-                            <Button variant="outline" size="sm">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleGenerateQR(credential)}
+                            >
                               <QrCode className="h-4 w-4 mr-2" />
                               Generate QR
                             </Button>
-                            <Button variant="outline" size="sm">
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleShare(credential)}
+                            >
+                              <Share className="h-4 w-4 mr-2" />
                               Share
                             </Button>
                           </div>
