@@ -445,6 +445,14 @@ export default function StudentDashboard() {
           </>
         )}
       </div>
+
+      {/* QR Code Modal */}
+      <QRModal
+        isOpen={qrModalOpen}
+        onClose={() => setQrModalOpen(false)}
+        credential={selectedCredential}
+        walletAddress={walletAddress}
+      />
     </div>
   );
 }
