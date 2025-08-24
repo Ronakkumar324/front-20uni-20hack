@@ -73,6 +73,7 @@ export default function VerificationPage() {
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [hasSearched, setHasSearched] = useState(false);
   const [selectedCredential, setSelectedCredential] = useState<any>(null);
+  const [qrModalOpen, setQrModalOpen] = useState(false);
 
   const handleSearch = async () => {
     if (!searchAddress.trim()) return;
