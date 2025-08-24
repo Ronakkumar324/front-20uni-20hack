@@ -124,6 +124,28 @@ export default function StudentDashboard() {
     }
   };
 
+  const handleShareProfile = () => {
+    // Create a profile credential object for QR generation
+    const profileCredential = {
+      id: "profile",
+      title: "Complete Credential Profile",
+      issuer: "CredVault",
+      date: new Date().toISOString(),
+      type: "Profile",
+      description: `Complete credential collection for wallet ${walletAddress}`,
+      eventLink: `${window.location.origin}/verify?address=${walletAddress}`,
+      metadata: {
+        totalCredentials: credentials.length,
+        walletAddress: walletAddress,
+        certificates: credentials.filter(c => c.type === "Certificate").length,
+        achievements: credentials.filter(c => c.type === "Achievement").length,
+        courses: credentials.filter(c => c.type === "Course Completion").length
+      }
+    };
+    setSelectedCredential(profileCredential);
+    setQrModalOpen(true);
+  };
+
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "Certificate":
