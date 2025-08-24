@@ -110,31 +110,38 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
   const shareQR = async () => {
     if (!credential || !walletAddress) return;
 
-    const verificationUrl = `${window.location.origin}/verify?address=${walletAddress}&credentialId=${credential.id}`;
+    try {
+      const verificationData = generateQRVerificationData(credential, walletAddress);
 
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Verify ${credential.title}`,
-          text: `Verify this credential: ${credential.title} issued by ${credential.issuer}`,
-          url: verificationUrl
-        });
-        return;
-      } catch (error) {
-        console.error('Share failed:', error);
+      if (navigator.share) {
+        try {
+          await navigator.share({
+            title: `Verify ${credential.title}`,
+            text: `Verify this credential: ${credential.title} issued by ${credential.issuer}`,
+            url: verificationData.url
+          });
+          return;
+        } catch (error) {
+          console.error('Share failed:', error);
+        }
       }
-    }
 
-    // Fallback to copying URL
-    const result = await copyToClipboard(verificationUrl);
+      // Fallback to copying URL
+      const result = await copyToClipboard(verificationData.url);
 
-    if (result.success) {
-      toast.success("Ready to share!", {
-        description: "Verification URL copied to clipboard. You can now paste it anywhere to share."
-      });
-    } else {
-      toast.error("Share failed", {
-        description: "Please copy the verification URL manually and share it."
+      if (result.success) {
+        toast.success("Ready to share!", {
+          description: "Verification URL copied to clipboard. You can now paste it anywhere to share."
+        });
+      } else {
+        toast.error("Share failed", {
+          description: "Please copy the verification URL manually and share it."
+        });
+      }
+    } catch (error) {
+      const errorMessage = handleUrlError(error);
+      toast.error("Share Failed", {
+        description: errorMessage
       });
     }
   };
