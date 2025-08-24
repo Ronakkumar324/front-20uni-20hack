@@ -105,31 +105,41 @@ export default function StudentDashboard() {
   };
 
   const handleShare = async (credential: typeof mockCredentials[0]) => {
-    const shareData = {
-      title: `${credential.title} - CredVault`,
-      text: `Check out my ${credential.type}: ${credential.title} issued by ${credential.issuer}`,
-      url: `${window.location.origin}/verify?address=${walletAddress}&credentialId=${credential.id}`
-    };
-
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-        return;
-      } catch (error) {
-        console.error('Share failed:', error);
-      }
+    if (!walletAddress) {
+      toast.error("Share failed", {
+        description: "Wallet not connected. Please connect your wallet first."
+      });
+      return;
     }
 
-    // Fallback to copying URL
-    const result = await copyToClipboard(shareData.url);
+    try {
+      const shareData = createShareableUrl(credential, walletAddress);
 
-    if (result.success) {
-      toast.success("Ready to share!", {
-        description: "Verification URL copied to clipboard. You can now paste it anywhere to share this credential."
-      });
-    } else {
-      toast.error("Share failed", {
-        description: "Please copy the verification URL manually and share it."
+      if (navigator.share) {
+        try {
+          await navigator.share(shareData);
+          return;
+        } catch (error) {
+          console.error('Share failed:', error);
+        }
+      }
+
+      // Fallback to copying URL
+      const result = await copyToClipboard(shareData.url);
+
+      if (result.success) {
+        toast.success("Ready to share!", {
+          description: "Verification URL copied to clipboard. You can now paste it anywhere to share this credential."
+        });
+      } else {
+        toast.error("Share failed", {
+          description: "Please copy the verification URL manually and share it."
+        });
+      }
+    } catch (error) {
+      const errorMessage = handleUrlError(error);
+      toast.error("Share Failed", {
+        description: errorMessage
       });
     }
   };
