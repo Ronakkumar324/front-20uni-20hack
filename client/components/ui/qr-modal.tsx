@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Copy, Download, Share2, CheckCircle } from "lucide-react";
 import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
 import { ClipboardHelp } from "@/components/ui/clipboard-status";
+import { generateQRVerificationData, handleUrlError } from "@/lib/url-utils";
 import { toast } from "sonner";
 
 interface Credential {
