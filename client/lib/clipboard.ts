@@ -119,18 +119,43 @@ async function copyWithTextSelection(text: string): Promise<ClipboardResult> {
  * Final fallback - prompt user to copy manually
  */
 function showManualCopyFallback(text: string): ClipboardResult {
-  // Create a modal-like prompt for manual copying
-  const message = `Unable to copy automatically. Please copy this text manually:\n\n${text}`;
-  
-  // Use prompt as last resort (not ideal but works everywhere)
-  if (window.prompt) {
-    window.prompt('Copy this text (Ctrl+C / Cmd+C):', text);
+  try {
+    // Create a temporary text area for manual selection
+    const textArea = document.createElement('textarea');
+    textArea.value = text;
+    textArea.style.position = 'fixed';
+    textArea.style.top = '50%';
+    textArea.style.left = '50%';
+    textArea.style.transform = 'translate(-50%, -50%)';
+    textArea.style.width = '80%';
+    textArea.style.height = '100px';
+    textArea.style.zIndex = '10000';
+    textArea.style.backgroundColor = 'white';
+    textArea.style.border = '2px solid #ccc';
+    textArea.style.padding = '10px';
+    textArea.readOnly = true;
+
+    document.body.appendChild(textArea);
+    textArea.select();
+    textArea.setSelectionRange(0, textArea.value.length);
+
+    // Show instruction
+    alert('The text has been selected. Press Ctrl+C (or Cmd+C on Mac) to copy, then click OK.');
+
+    document.body.removeChild(textArea);
     return { success: true, method: 'fallback' };
+  } catch (error) {
+    // Ultimate fallback - use prompt if available
+    if (window.prompt) {
+      window.prompt('Copy this text (Ctrl+C / Cmd+C):', text);
+      return { success: true, method: 'fallback' };
+    }
+
+    // If even prompt doesn't work, just alert
+    const message = `Unable to copy automatically. Please copy this text manually:\n\n${text}`;
+    alert(message);
+    return { success: false, error: 'All clipboard methods failed' };
   }
-  
-  // If even prompt doesn't work, just alert
-  alert(message);
-  return { success: false, error: 'All clipboard methods failed' };
 }
 
 /**
