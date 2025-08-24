@@ -113,16 +113,23 @@ export default function StudentDashboard() {
     if (navigator.share) {
       try {
         await navigator.share(shareData);
+        return;
       } catch (error) {
         console.error('Share failed:', error);
-        // Fallback to copying URL
-        navigator.clipboard.writeText(shareData.url);
-        alert('Verification URL copied to clipboard!');
       }
+    }
+
+    // Fallback to copying URL
+    const result = await copyToClipboard(shareData.url);
+
+    if (result.success) {
+      toast.success("Ready to share!", {
+        description: "Verification URL copied to clipboard. You can now paste it anywhere to share this credential."
+      });
     } else {
-      // Fallback for browsers without Web Share API
-      navigator.clipboard.writeText(shareData.url);
-      alert('Verification URL copied to clipboard!');
+      toast.error("Share failed", {
+        description: "Please copy the verification URL manually and share it."
+      });
     }
   };
 
