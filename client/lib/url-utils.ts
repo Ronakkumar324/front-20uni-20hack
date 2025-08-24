@@ -28,27 +28,27 @@ export interface VerificationUrlData {
 export function generateVerificationUrl(
   walletAddress: string,
   credentialId: string,
-  baseUrl?: string
+  baseUrl?: string,
 ): string {
   if (!walletAddress || !credentialId) {
-    throw new Error('Wallet address and credential ID are required');
+    throw new Error("Wallet address and credential ID are required");
   }
 
   // Clean and validate inputs
   const cleanAddress = walletAddress.trim();
   const cleanCredentialId = credentialId.trim();
-  
+
   if (!isValidWalletAddress(cleanAddress)) {
-    throw new Error('Invalid wallet address format');
+    throw new Error("Invalid wallet address format");
   }
 
   // Use provided baseUrl or current origin
   const origin = baseUrl || window.location.origin;
-  
+
   // Encode parameters properly
   const params = new URLSearchParams({
     address: cleanAddress,
-    credentialId: cleanCredentialId
+    credentialId: cleanCredentialId,
   });
 
   return `${origin}/verify?${params.toString()}`;
@@ -57,20 +57,23 @@ export function generateVerificationUrl(
 /**
  * Generate a profile verification URL
  */
-export function generateProfileUrl(walletAddress: string, baseUrl?: string): string {
+export function generateProfileUrl(
+  walletAddress: string,
+  baseUrl?: string,
+): string {
   if (!walletAddress) {
-    throw new Error('Wallet address is required');
+    throw new Error("Wallet address is required");
   }
 
   const cleanAddress = walletAddress.trim();
-  
+
   if (!isValidWalletAddress(cleanAddress)) {
-    throw new Error('Invalid wallet address format');
+    throw new Error("Invalid wallet address format");
   }
 
   const origin = baseUrl || window.location.origin;
   const params = new URLSearchParams({
-    address: cleanAddress
+    address: cleanAddress,
   });
 
   return `${origin}/verify?${params.toString()}`;
@@ -80,17 +83,17 @@ export function generateProfileUrl(walletAddress: string, baseUrl?: string): str
  * Parse URL parameters from current location
  */
 export function parseUrlParams(): CredentialParams {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return {};
   }
 
   const urlParams = new URLSearchParams(window.location.search);
-  
+
   return {
-    address: urlParams.get('address') || undefined,
-    credentialId: urlParams.get('credentialId') || undefined,
-    type: urlParams.get('type') || undefined,
-    issuer: urlParams.get('issuer') || undefined,
+    address: urlParams.get("address") || undefined,
+    credentialId: urlParams.get("credentialId") || undefined,
+    type: urlParams.get("type") || undefined,
+    issuer: urlParams.get("issuer") || undefined,
   };
 }
 
@@ -106,10 +109,10 @@ export function generateQRVerificationData(
     date: string;
   },
   walletAddress: string,
-  baseUrl?: string
+  baseUrl?: string,
 ): VerificationUrlData {
   const url = generateVerificationUrl(walletAddress, credential.id, baseUrl);
-  
+
   return {
     url,
     data: {
@@ -119,8 +122,8 @@ export function generateQRVerificationData(
       title: credential.title,
       type: credential.type,
       issuedDate: credential.date,
-      timestamp: Date.now()
-    }
+      timestamp: Date.now(),
+    },
   };
 }
 
@@ -128,24 +131,24 @@ export function generateQRVerificationData(
  * Basic wallet address validation
  */
 export function isValidWalletAddress(address: string): boolean {
-  if (!address || typeof address !== 'string') {
+  if (!address || typeof address !== "string") {
     return false;
   }
 
   const trimmed = address.trim();
-  
+
   // Basic validation - should start with 0x for Aptos or be a valid format
   // This is a simple check - in real app you'd use proper Aptos address validation
-  if (trimmed.startsWith('0x')) {
+  if (trimmed.startsWith("0x")) {
     // Hex address validation
     return /^0x[a-fA-F0-9]{1,64}$/.test(trimmed);
   }
-  
+
   // Named address validation (like username.apt)
-  if (trimmed.includes('.apt')) {
+  if (trimmed.includes(".apt")) {
     return /^[a-zA-Z0-9_-]+\.apt$/.test(trimmed);
   }
-  
+
   // For demo purposes, accept any reasonable format
   return trimmed.length >= 6 && trimmed.length <= 100;
 }
@@ -154,10 +157,10 @@ export function isValidWalletAddress(address: string): boolean {
  * Validate credential ID format
  */
 export function isValidCredentialId(id: string): boolean {
-  if (!id || typeof id !== 'string') {
+  if (!id || typeof id !== "string") {
     return false;
   }
-  
+
   const trimmed = id.trim();
   // Should be non-empty and reasonable length
   return trimmed.length > 0 && trimmed.length <= 100;
@@ -173,14 +176,14 @@ export function createShareableUrl(
     issuer: string;
     type: string;
   },
-  walletAddress: string
+  walletAddress: string,
 ): { url: string; title: string; text: string } {
   const url = generateVerificationUrl(walletAddress, credential.id);
-  
+
   return {
     url,
     title: `${credential.title} - CredVault`,
-    text: `Verify this ${credential.type.toLowerCase()}: "${credential.title}" issued by ${credential.issuer}`
+    text: `Verify this ${credential.type.toLowerCase()}: "${credential.title}" issued by ${credential.issuer}`,
   };
 }
 
@@ -189,26 +192,29 @@ export function createShareableUrl(
  */
 export function handleUrlError(error: unknown): string {
   if (error instanceof Error) {
-    if (error.message.includes('Invalid wallet address')) {
-      return 'Invalid wallet address format. Please check the address and try again.';
+    if (error.message.includes("Invalid wallet address")) {
+      return "Invalid wallet address format. Please check the address and try again.";
     }
-    if (error.message.includes('required')) {
-      return 'Missing required information for verification URL.';
+    if (error.message.includes("required")) {
+      return "Missing required information for verification URL.";
     }
     return error.message;
   }
-  
-  return 'Unable to generate verification URL. Please try again.';
+
+  return "Unable to generate verification URL. Please try again.";
 }
 
 /**
  * Sanitize URL for display
  */
-export function sanitizeUrlForDisplay(url: string, maxLength: number = 60): string {
+export function sanitizeUrlForDisplay(
+  url: string,
+  maxLength: number = 60,
+): string {
   if (url.length <= maxLength) {
     return url;
   }
-  
+
   const start = url.substring(0, maxLength / 2);
   const end = url.substring(url.length - maxLength / 2);
   return `${start}...${end}`;

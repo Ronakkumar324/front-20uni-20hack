@@ -17,7 +17,11 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { QRModal } from "@/components/ui/qr-modal";
 import { toast } from "sonner";
 import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
-import { parseUrlParams, isValidWalletAddress, isValidCredentialId } from "@/lib/url-utils";
+import {
+  parseUrlParams,
+  isValidWalletAddress,
+  isValidCredentialId,
+} from "@/lib/url-utils";
 import {
   Shield,
   Search,
@@ -95,14 +99,17 @@ export default function VerificationPage() {
         }
       } else {
         toast.error("Invalid URL", {
-          description: "The wallet address in the URL is not valid."
+          description: "The wallet address in the URL is not valid.",
         });
       }
     }
 
-    if (urlParams.credentialId && !isValidCredentialId(urlParams.credentialId)) {
+    if (
+      urlParams.credentialId &&
+      !isValidCredentialId(urlParams.credentialId)
+    ) {
       toast.error("Invalid URL", {
-        description: "The credential ID in the URL is not valid."
+        description: "The credential ID in the URL is not valid.",
       });
     }
   }, []);
@@ -114,7 +121,7 @@ export default function VerificationPage() {
 
     if (!isValidWalletAddress(addressToSearch)) {
       toast.error("Invalid Address", {
-        description: "Please enter a valid wallet address."
+        description: "Please enter a valid wallet address.",
       });
       return;
     }
@@ -135,13 +142,13 @@ export default function VerificationPage() {
       // Show success message for URL-based searches
       if (addressOverride && results.length > 0) {
         toast.success("Credentials Found", {
-          description: `Found ${results.length} credential(s) for this address.`
+          description: `Found ${results.length} credential(s) for this address.`,
         });
       }
     } catch (error) {
       setSearchResults([]);
       toast.error("Search Failed", {
-        description: "Unable to search for credentials. Please try again."
+        description: "Unable to search for credentials. Please try again.",
       });
     } finally {
       setIsSearching(false);
@@ -154,20 +161,29 @@ export default function VerificationPage() {
 
     try {
       // Check if the browser supports the Web API for camera access
-      if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+      if (
+        "mediaDevices" in navigator &&
+        "getUserMedia" in navigator.mediaDevices
+      ) {
         // For demo, we'll show an alert and use sample data
-        const confirmScan = confirm("QR Scanner: Would you like to scan a QR code?\n\nFor demo purposes, this will use sample credential data.");
+        const confirmScan = confirm(
+          "QR Scanner: Would you like to scan a QR code?\n\nFor demo purposes, this will use sample credential data.",
+        );
 
         if (confirmScan) {
           setSearchAddress("0x1234...abcd");
           await handleSearch();
         }
       } else {
-        alert("Camera access is not supported in this browser. Please enter a wallet address manually.");
+        alert(
+          "Camera access is not supported in this browser. Please enter a wallet address manually.",
+        );
       }
     } catch (error) {
-      console.error('QR Scanner error:', error);
-      alert("QR Scanner not available. Please enter a wallet address manually.");
+      console.error("QR Scanner error:", error);
+      alert(
+        "QR Scanner not available. Please enter a wallet address manually.",
+      );
     }
   };
 
@@ -181,11 +197,11 @@ export default function VerificationPage() {
 
     if (result.success) {
       toast.success("Copied to clipboard!", {
-        description: getClipboardMessage(result)
+        description: getClipboardMessage(result),
       });
     } else {
       toast.error("Failed to copy", {
-        description: "Please try selecting and copying the text manually."
+        description: "Please try selecting and copying the text manually.",
       });
     }
   };

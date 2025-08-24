@@ -13,7 +13,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { QRModal } from "@/components/ui/qr-modal";
 import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
-import { createShareableUrl, generateProfileUrl, handleUrlError } from "@/lib/url-utils";
+import {
+  createShareableUrl,
+  generateProfileUrl,
+  handleUrlError,
+} from "@/lib/url-utils";
 import { toast } from "sonner";
 import {
   Shield,
@@ -86,7 +90,9 @@ export default function StudentDashboard() {
   const [walletAddress, setWalletAddress] = useState("");
   const [credentials, setCredentials] = useState(mockCredentials);
   const [qrModalOpen, setQrModalOpen] = useState(false);
-  const [selectedCredential, setSelectedCredential] = useState<typeof mockCredentials[0] | null>(null);
+  const [selectedCredential, setSelectedCredential] = useState<
+    (typeof mockCredentials)[0] | null
+  >(null);
 
   const connectWallet = async () => {
     // Mock wallet connection - in real app would use Aptos wallet adapter
@@ -99,15 +105,15 @@ export default function StudentDashboard() {
     setWalletAddress("");
   };
 
-  const handleGenerateQR = (credential: typeof mockCredentials[0]) => {
+  const handleGenerateQR = (credential: (typeof mockCredentials)[0]) => {
     setSelectedCredential(credential);
     setQrModalOpen(true);
   };
 
-  const handleShare = async (credential: typeof mockCredentials[0]) => {
+  const handleShare = async (credential: (typeof mockCredentials)[0]) => {
     if (!walletAddress) {
       toast.error("Share failed", {
-        description: "Wallet not connected. Please connect your wallet first."
+        description: "Wallet not connected. Please connect your wallet first.",
       });
       return;
     }
@@ -120,7 +126,7 @@ export default function StudentDashboard() {
           await navigator.share(shareData);
           return;
         } catch (error) {
-          console.error('Share failed:', error);
+          console.error("Share failed:", error);
         }
       }
 
@@ -129,17 +135,19 @@ export default function StudentDashboard() {
 
       if (result.success) {
         toast.success("Ready to share!", {
-          description: "Verification URL copied to clipboard. You can now paste it anywhere to share this credential."
+          description:
+            "Verification URL copied to clipboard. You can now paste it anywhere to share this credential.",
         });
       } else {
         toast.error("Share failed", {
-          description: "Please copy the verification URL manually and share it."
+          description:
+            "Please copy the verification URL manually and share it.",
         });
       }
     } catch (error) {
       const errorMessage = handleUrlError(error);
       toast.error("Share Failed", {
-        description: errorMessage
+        description: errorMessage,
       });
     }
   };
@@ -147,7 +155,7 @@ export default function StudentDashboard() {
   const handleShareProfile = () => {
     if (!walletAddress) {
       toast.error("Share failed", {
-        description: "Wallet not connected. Please connect your wallet first."
+        description: "Wallet not connected. Please connect your wallet first.",
       });
       return;
     }
@@ -165,17 +173,20 @@ export default function StudentDashboard() {
         metadata: {
           totalCredentials: credentials.length,
           walletAddress: walletAddress,
-          certificates: credentials.filter(c => c.type === "Certificate").length,
-          achievements: credentials.filter(c => c.type === "Achievement").length,
-          courses: credentials.filter(c => c.type === "Course Completion").length
-        }
+          certificates: credentials.filter((c) => c.type === "Certificate")
+            .length,
+          achievements: credentials.filter((c) => c.type === "Achievement")
+            .length,
+          courses: credentials.filter((c) => c.type === "Course Completion")
+            .length,
+        },
       };
       setSelectedCredential(profileCredential);
       setQrModalOpen(true);
     } catch (error) {
       const errorMessage = handleUrlError(error);
       toast.error("Profile Share Failed", {
-        description: errorMessage
+        description: errorMessage,
       });
     }
   };

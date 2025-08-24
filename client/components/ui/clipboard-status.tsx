@@ -5,7 +5,7 @@ import { isClipboardSupported } from "@/lib/clipboard";
 
 export function ClipboardStatus() {
   const isSupported = isClipboardSupported();
-  
+
   if (isSupported) {
     return (
       <Badge variant="secondary" className="bg-green-100 text-green-800">
@@ -14,7 +14,7 @@ export function ClipboardStatus() {
       </Badge>
     );
   }
-  
+
   return (
     <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
       <AlertCircle className="h-3 w-3 mr-1" />
@@ -29,7 +29,7 @@ interface ClipboardHelpProps {
 
 export function ClipboardHelp({ className }: ClipboardHelpProps) {
   const isSupported = isClipboardSupported();
-  
+
   if (isSupported) {
     return (
       <p className={`text-xs text-gray-500 ${className}`}>
@@ -38,7 +38,7 @@ export function ClipboardHelp({ className }: ClipboardHelpProps) {
       </p>
     );
   }
-  
+
   return (
     <p className={`text-xs text-gray-500 ${className}`}>
       <AlertCircle className="h-3 w-3 inline mr-1" />

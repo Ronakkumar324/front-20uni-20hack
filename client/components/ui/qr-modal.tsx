@@ -1,6 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import QRCode from "qrcode";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Copy, Download, Share2, CheckCircle } from "lucide-react";
@@ -27,7 +33,12 @@ interface QRModalProps {
   walletAddress?: string;
 }
 
-export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalProps) {
+export function QRModal({
+  isOpen,
+  onClose,
+  credential,
+  walletAddress,
+}: QRModalProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [qrDataUrl, setQrDataUrl] = useState<string>("");
   const [copied, setCopied] = useState(false);
@@ -43,7 +54,10 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
 
     try {
       // Create verification data using improved URL utilities
-      const verificationData = generateQRVerificationData(credential, walletAddress);
+      const verificationData = generateQRVerificationData(
+        credential,
+        walletAddress,
+      );
 
       // Use the URL directly for QR code (cleaner than JSON)
       const qrData = verificationData.url;
@@ -53,20 +67,20 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
         width: 300,
         margin: 2,
         color: {
-          dark: '#1f2937',
-          light: '#ffffff'
+          dark: "#1f2937",
+          light: "#ffffff",
         },
-        errorCorrectionLevel: 'M' // Medium error correction for better scanning
+        errorCorrectionLevel: "M", // Medium error correction for better scanning
       });
 
       // Get data URL for sharing/downloading
-      const dataUrl = canvasRef.current.toDataURL('image/png');
+      const dataUrl = canvasRef.current.toDataURL("image/png");
       setQrDataUrl(dataUrl);
     } catch (error) {
-      console.error('QR Code generation failed:', error);
+      console.error("QR Code generation failed:", error);
       const errorMessage = handleUrlError(error);
       toast.error("QR Generation Failed", {
-        description: errorMessage
+        description: errorMessage,
       });
     }
   };
@@ -75,7 +89,10 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
     if (!credential || !walletAddress) return;
 
     try {
-      const verificationData = generateQRVerificationData(credential, walletAddress);
+      const verificationData = generateQRVerificationData(
+        credential,
+        walletAddress,
+      );
       const result = await copyToClipboard(verificationData.url);
 
       if (result.success) {
@@ -83,17 +100,17 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
         setTimeout(() => setCopied(false), 2000);
 
         toast.success("Copied!", {
-          description: getClipboardMessage(result)
+          description: getClipboardMessage(result),
         });
       } else {
         toast.error("Copy failed", {
-          description: "Please copy the URL manually or try again."
+          description: "Please copy the URL manually or try again.",
         });
       }
     } catch (error) {
       const errorMessage = handleUrlError(error);
       toast.error("URL Generation Failed", {
-        description: errorMessage
+        description: errorMessage,
       });
     }
   };
@@ -101,8 +118,8 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
   const downloadQR = () => {
     if (!qrDataUrl || !credential) return;
 
-    const link = document.createElement('a');
-    link.download = `${credential.title.replace(/[^a-z0-9]/gi, '_').toLowerCase()}_qr.png`;
+    const link = document.createElement("a");
+    link.download = `${credential.title.replace(/[^a-z0-9]/gi, "_").toLowerCase()}_qr.png`;
     link.href = qrDataUrl;
     link.click();
   };
@@ -111,18 +128,21 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
     if (!credential || !walletAddress) return;
 
     try {
-      const verificationData = generateQRVerificationData(credential, walletAddress);
+      const verificationData = generateQRVerificationData(
+        credential,
+        walletAddress,
+      );
 
       if (navigator.share) {
         try {
           await navigator.share({
             title: `Verify ${credential.title}`,
             text: `Verify this credential: ${credential.title} issued by ${credential.issuer}`,
-            url: verificationData.url
+            url: verificationData.url,
           });
           return;
         } catch (error) {
-          console.error('Share failed:', error);
+          console.error("Share failed:", error);
         }
       }
 
@@ -131,17 +151,19 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
 
       if (result.success) {
         toast.success("Ready to share!", {
-          description: "Verification URL copied to clipboard. You can now paste it anywhere to share."
+          description:
+            "Verification URL copied to clipboard. You can now paste it anywhere to share.",
         });
       } else {
         toast.error("Share failed", {
-          description: "Please copy the verification URL manually and share it."
+          description:
+            "Please copy the verification URL manually and share it.",
         });
       }
     } catch (error) {
       const errorMessage = handleUrlError(error);
       toast.error("Share Failed", {
-        description: errorMessage
+        description: errorMessage,
       });
     }
   };
@@ -157,15 +179,20 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
             <Badge variant="secondary">{credential.type}</Badge>
           </DialogTitle>
           <DialogDescription>
-            Scan this QR code to instantly verify the authenticity of this credential on the blockchain.
+            Scan this QR code to instantly verify the authenticity of this
+            credential on the blockchain.
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
           {/* Credential Info */}
           <div className="bg-gray-50 p-4 rounded-lg">
-            <h3 className="font-semibold text-sm text-gray-900 mb-1">{credential.title}</h3>
-            <p className="text-sm text-gray-600">Issued by {credential.issuer}</p>
+            <h3 className="font-semibold text-sm text-gray-900 mb-1">
+              {credential.title}
+            </h3>
+            <p className="text-sm text-gray-600">
+              Issued by {credential.issuer}
+            </p>
             <p className="text-xs text-gray-500 mt-1">
               {new Date(credential.date).toLocaleDateString()}
             </p>
@@ -173,20 +200,20 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
 
           {/* QR Code */}
           <div className="flex justify-center bg-white p-4 rounded-lg border">
-            <canvas
-              ref={canvasRef}
-              className="max-w-full h-auto"
-            />
+            <canvas ref={canvasRef} className="max-w-full h-auto" />
           </div>
 
           {/* Verification Info */}
           <div className="bg-blue-50 p-3 rounded-lg">
             <div className="flex items-center space-x-2 mb-1">
               <CheckCircle className="h-4 w-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-900">Verification Details</span>
+              <span className="text-sm font-medium text-blue-900">
+                Verification Details
+              </span>
             </div>
             <p className="text-xs text-blue-700">
-              This QR contains blockchain verification data including credential ID, wallet address, and issuer information.
+              This QR contains blockchain verification data including credential
+              ID, wallet address, and issuer information.
             </p>
           </div>
 

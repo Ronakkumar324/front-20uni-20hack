@@ -100,11 +100,12 @@ export default function IssuerDashboard() {
       });
 
       toast.success("Credential minted successfully!", {
-        description: "The soulbound NFT has been created and sent to the recipient's wallet."
+        description:
+          "The soulbound NFT has been created and sent to the recipient's wallet.",
       });
     } catch (error) {
       toast.error("Failed to mint credential", {
-        description: "Please check the form data and try again."
+        description: "Please check the form data and try again.",
       });
     } finally {
       setIsLoading(false);

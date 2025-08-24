@@ -4,13 +4,13 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { 
-  generateVerificationUrl, 
-  generateProfileUrl, 
-  isValidWalletAddress, 
+import {
+  generateVerificationUrl,
+  generateProfileUrl,
+  isValidWalletAddress,
   isValidCredentialId,
   parseUrlParams,
-  sanitizeUrlForDisplay
+  sanitizeUrlForDisplay,
 } from "@/lib/url-utils";
 import { CheckCircle, XCircle, ExternalLink } from "lucide-react";
 
@@ -58,13 +58,19 @@ export function URLTestComponent() {
           <div className="grid grid-cols-2 gap-2">
             <div>
               <span className="text-sm font-medium">Address:</span>
-              <Badge variant={currentParams.address ? "default" : "secondary"} className="ml-2">
+              <Badge
+                variant={currentParams.address ? "default" : "secondary"}
+                className="ml-2"
+              >
                 {currentParams.address || "None"}
               </Badge>
             </div>
             <div>
               <span className="text-sm font-medium">Credential ID:</span>
-              <Badge variant={currentParams.credentialId ? "default" : "secondary"} className="ml-2">
+              <Badge
+                variant={currentParams.credentialId ? "default" : "secondary"}
+                className="ml-2"
+              >
                 {currentParams.credentialId || "None"}
               </Badge>
             </div>
@@ -81,7 +87,13 @@ export function URLTestComponent() {
                 onChange={(e) => setWalletAddress(e.target.value)}
                 placeholder="0x1234... or user.apt"
               />
-              <Badge variant={isValidWalletAddress(walletAddress) ? "default" : "destructive"}>
+              <Badge
+                variant={
+                  isValidWalletAddress(walletAddress)
+                    ? "default"
+                    : "destructive"
+                }
+              >
                 {isValidWalletAddress(walletAddress) ? (
                   <CheckCircle className="h-3 w-3 mr-1" />
                 ) : (
@@ -100,7 +112,11 @@ export function URLTestComponent() {
                 onChange={(e) => setCredentialId(e.target.value)}
                 placeholder="cert-123"
               />
-              <Badge variant={isValidCredentialId(credentialId) ? "default" : "destructive"}>
+              <Badge
+                variant={
+                  isValidCredentialId(credentialId) ? "default" : "destructive"
+                }
+              >
                 {isValidCredentialId(credentialId) ? (
                   <CheckCircle className="h-3 w-3 mr-1" />
                 ) : (
@@ -115,7 +131,9 @@ export function URLTestComponent() {
         {/* Test Buttons */}
         <div className="flex space-x-2">
           <Button onClick={testUrlGeneration}>Generate Credential URL</Button>
-          <Button onClick={testProfileUrl} variant="outline">Generate Profile URL</Button>
+          <Button onClick={testProfileUrl} variant="outline">
+            Generate Profile URL
+          </Button>
         </div>
 
         {/* Results */}
@@ -129,9 +147,15 @@ export function URLTestComponent() {
                   {generatedUrl}
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm">Sanitized: {sanitizeUrlForDisplay(generatedUrl)}</span>
+                  <span className="text-sm">
+                    Sanitized: {sanitizeUrlForDisplay(generatedUrl)}
+                  </span>
                   <Button size="sm" variant="outline" asChild>
-                    <a href={generatedUrl} target="_blank" rel="noopener noreferrer">
+                    <a
+                      href={generatedUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <ExternalLink className="h-3 w-3 mr-1" />
                       Test
                     </a>
