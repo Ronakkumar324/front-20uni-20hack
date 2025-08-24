@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { QRModal } from "@/components/ui/qr-modal";
 import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
+import { createShareableUrl, generateProfileUrl, handleUrlError } from "@/lib/url-utils";
 import { toast } from "sonner";
 import {
   Shield,
