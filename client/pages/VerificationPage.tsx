@@ -17,6 +17,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { QRModal } from "@/components/ui/qr-modal";
 import { toast } from "sonner";
 import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
+import { parseUrlParams, isValidWalletAddress, isValidCredentialId } from "@/lib/url-utils";
 import {
   Shield,
   Search,
