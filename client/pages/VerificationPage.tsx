@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { QRModal } from "@/components/ui/qr-modal";
+import { toast } from "sonner";
 import {
   Shield,
   Search,
