@@ -287,7 +287,7 @@ export default function VerificationPage() {
               </div>
               <div className="flex gap-2 items-end">
                 <Button
-                  onClick={handleSearch}
+                  onClick={() => handleSearch()}
                   disabled={isSearching || !searchAddress.trim()}
                 >
                   {isSearching ? (
