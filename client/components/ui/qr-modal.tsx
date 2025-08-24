@@ -39,23 +39,15 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
   }, [isOpen, credential]);
 
   const generateQRCode = async () => {
-    if (!credential || !canvasRef.current) return;
-
-    // Create verification URL/data for the credential
-    const verificationData = {
-      credentialId: credential.id,
-      walletAddress: walletAddress || "unknown",
-      issuer: credential.issuer,
-      title: credential.title,
-      type: credential.type,
-      issuedDate: credential.date,
-      verificationUrl: `${window.location.origin}/verify?address=${walletAddress}&credentialId=${credential.id}`,
-      timestamp: Date.now()
-    };
-
-    const qrData = JSON.stringify(verificationData);
+    if (!credential || !canvasRef.current || !walletAddress) return;
 
     try {
+      // Create verification data using improved URL utilities
+      const verificationData = generateQRVerificationData(credential, walletAddress);
+
+      // Use the URL directly for QR code (cleaner than JSON)
+      const qrData = verificationData.url;
+
       // Generate QR code on canvas
       await QRCode.toCanvas(canvasRef.current, qrData, {
         width: 300,
@@ -63,7 +55,8 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
         color: {
           dark: '#1f2937',
           light: '#ffffff'
-        }
+        },
+        errorCorrectionLevel: 'M' // Medium error correction for better scanning
       });
 
       // Get data URL for sharing/downloading
@@ -71,6 +64,10 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
       setQrDataUrl(dataUrl);
     } catch (error) {
       console.error('QR Code generation failed:', error);
+      const errorMessage = handleUrlError(error);
+      toast.error("QR Generation Failed", {
+        description: errorMessage
+      });
     }
   };
 
