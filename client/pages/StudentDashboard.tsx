@@ -12,6 +12,8 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { QRModal } from "@/components/ui/qr-modal";
+import { copyToClipboard, getClipboardMessage } from "@/lib/clipboard";
+import { toast } from "sonner";
 import {
   Shield,
   Award,
