@@ -97,11 +97,27 @@ export default function VerificationPage() {
     }
   };
 
-  const handleQRScan = () => {
-    // Mock QR scan - in real app would open camera/QR scanner
-    alert("QR Scanner would open here. For demo, using sample data.");
-    setSearchAddress("0x1234...abcd");
-    handleSearch();
+  const handleQRScan = async () => {
+    // In a real implementation, this would use the device camera
+    // For demo purposes, we'll simulate scanning by using sample data
+
+    try {
+      // Check if the browser supports the Web API for camera access
+      if ('mediaDevices' in navigator && 'getUserMedia' in navigator.mediaDevices) {
+        // For demo, we'll show an alert and use sample data
+        const confirmScan = confirm("QR Scanner: Would you like to scan a QR code?\n\nFor demo purposes, this will use sample credential data.");
+
+        if (confirmScan) {
+          setSearchAddress("0x1234...abcd");
+          await handleSearch();
+        }
+      } else {
+        alert("Camera access is not supported in this browser. Please enter a wallet address manually.");
+      }
+    } catch (error) {
+      console.error('QR Scanner error:', error);
+      alert("QR Scanner not available. Please enter a wallet address manually.");
+    }
   };
 
   const generateQRForCredential = (credential: any) => {
