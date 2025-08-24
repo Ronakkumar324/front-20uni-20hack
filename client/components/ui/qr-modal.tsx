@@ -106,7 +106,7 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
     if (!credential || !walletAddress) return;
 
     const verificationUrl = `${window.location.origin}/verify?address=${walletAddress}&credentialId=${credential.id}`;
-    
+
     if (navigator.share) {
       try {
         await navigator.share({
@@ -114,12 +114,23 @@ export function QRModal({ isOpen, onClose, credential, walletAddress }: QRModalP
           text: `Verify this credential: ${credential.title} issued by ${credential.issuer}`,
           url: verificationUrl
         });
+        return;
       } catch (error) {
         console.error('Share failed:', error);
-        copyVerificationUrl();
       }
+    }
+
+    // Fallback to copying URL
+    const result = await copyToClipboard(verificationUrl);
+
+    if (result.success) {
+      toast.success("Ready to share!", {
+        description: "Verification URL copied to clipboard. You can now paste it anywhere to share."
+      });
     } else {
-      copyVerificationUrl();
+      toast.error("Share failed", {
+        description: "Please copy the verification URL manually and share it."
+      });
     }
   };
 
