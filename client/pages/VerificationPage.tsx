@@ -78,6 +78,35 @@ export default function VerificationPage() {
   const [selectedCredential, setSelectedCredential] = useState<any>(null);
   const [qrModalOpen, setQrModalOpen] = useState(false);
 
+  // Handle URL parameters from QR codes or direct links
+  useEffect(() => {
+    const urlParams = parseUrlParams();
+
+    if (urlParams.address) {
+      if (isValidWalletAddress(urlParams.address)) {
+        setSearchAddress(urlParams.address);
+
+        // Auto-search if we have a valid address
+        if (urlParams.address.trim()) {
+          // Small delay to allow state to update
+          setTimeout(() => {
+            handleSearch(urlParams.address);
+          }, 100);
+        }
+      } else {
+        toast.error("Invalid URL", {
+          description: "The wallet address in the URL is not valid."
+        });
+      }
+    }
+
+    if (urlParams.credentialId && !isValidCredentialId(urlParams.credentialId)) {
+      toast.error("Invalid URL", {
+        description: "The credential ID in the URL is not valid."
+      });
+    }
+  }, []);
+
   const handleSearch = async () => {
     if (!searchAddress.trim()) return;
 
