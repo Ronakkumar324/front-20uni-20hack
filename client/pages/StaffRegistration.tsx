@@ -245,8 +245,8 @@ export default function StaffRegistration() {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <Link to="/staff" className="text-primary hover:underline">
-              Go to Staff Dashboard
+            <Link to="/signin/staff" className="text-primary hover:underline">
+              Sign In to Staff Dashboard
             </Link>
           </p>
         </div>
