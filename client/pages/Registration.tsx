@@ -122,17 +122,20 @@ export default function Registration() {
               Already have an account?
             </h2>
             <p className="text-gray-600 mb-6">
-              Select your role to access your dashboard directly.
+              Sign in to access your dashboard.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button variant="outline" onClick={() => navigate('/student')}>
-                Student Dashboard
+              <Button onClick={() => navigate('/signin')}>
+                Sign In
               </Button>
-              <Button variant="outline" onClick={() => navigate('/staff')}>
-                Staff Dashboard
+              <Button variant="outline" onClick={() => navigate('/signin/student')}>
+                Student Sign In
               </Button>
-              <Button variant="outline" onClick={() => navigate('/issuer')}>
-                Issuer Dashboard
+              <Button variant="outline" onClick={() => navigate('/signin/staff')}>
+                Staff Sign In
+              </Button>
+              <Button variant="outline" onClick={() => navigate('/signin/issuer')}>
+                Issuer Sign In
               </Button>
             </div>
           </div>
