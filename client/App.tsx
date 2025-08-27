@@ -27,18 +27,30 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/student" element={<StudentDashboard />} />
-            <Route path="/issuer" element={<IssuerDashboard />} />
-            <Route path="/verify" element={<VerificationPage />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-        <Toaster />
-        <Sonner />
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/student" element={<StudentDashboard />} />
+              <Route path="/issuer" element={<IssuerDashboard />} />
+              <Route path="/verify" element={<VerificationPage />} />
+
+              {/* Registration Routes */}
+              <Route path="/register" element={<Registration />} />
+              <Route path="/register/student" element={<StudentRegistration />} />
+              <Route path="/register/staff" element={<StaffRegistration />} />
+              <Route path="/register/issuer" element={<IssuerRegistration />} />
+
+              {/* Staff dashboard placeholder - will create this later */}
+              <Route path="/staff" element={<div className="min-h-screen flex items-center justify-center"><p>Staff Dashboard - Coming Soon!</p></div>} />
+
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+          <Toaster />
+          <Sonner />
+        </AuthProvider>
       </TooltipProvider>
     </QueryClientProvider>
   );
