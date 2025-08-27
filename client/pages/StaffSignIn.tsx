@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Shield, ArrowLeft, AlertCircle, LogIn, CheckCircle } from "lucide-react";
+import {
+  Shield,
+  ArrowLeft,
+  AlertCircle,
+  LogIn,
+  CheckCircle,
+} from "lucide-react";
 import { signInStaff, isValidEmail, type StaffSignIn } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
@@ -15,16 +27,16 @@ export default function StaffSignIn() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState<StaffSignIn>({
-    email: ''
+    email: "",
   });
   const [errors, setErrors] = useState<Partial<StaffSignIn>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: keyof StaffSignIn, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -32,9 +44,9 @@ export default function StaffSignIn() {
     const newErrors: Partial<StaffSignIn> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!isValidEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     setErrors(newErrors);
@@ -43,7 +55,7 @@ export default function StaffSignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -52,30 +64,31 @@ export default function StaffSignIn() {
 
     try {
       const profile = signInStaff(formData);
-      
+
       if (!profile) {
         toast.error("Sign In Failed", {
-          description: "No staff account found with this email address. Please check your email or register a new account."
+          description:
+            "No staff account found with this email address. Please check your email or register a new account.",
         });
         return;
       }
 
       // Login the user
       login(profile);
-      
+
       toast.success("Sign In Successful!", {
-        description: `Welcome back, ${profile.name}! Redirecting to your dashboard...`
+        description: `Welcome back, ${profile.name}! Redirecting to your dashboard...`,
       });
 
       // Redirect to staff dashboard after a short delay
       setTimeout(() => {
-        navigate('/staff');
+        navigate("/staff");
       }, 1500);
-
     } catch (error: any) {
-      console.error('Sign in failed:', error);
+      console.error("Sign in failed:", error);
       toast.error("Sign In Failed", {
-        description: error.message || "Please check your credentials and try again."
+        description:
+          error.message || "Please check your credentials and try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -95,9 +108,12 @@ export default function StaffSignIn() {
               <span className="font-bold text-xl text-gray-900">CredVault</span>
               <Badge variant="secondary">Staff Sign In</Badge>
             </Link>
-            
+
             <div className="flex items-center space-x-4">
-              <Link to="/signin" className="text-gray-700 hover:text-primary flex items-center">
+              <Link
+                to="/signin"
+                className="text-gray-700 hover:text-primary flex items-center"
+              >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back to Sign In
               </Link>
@@ -124,10 +140,11 @@ export default function StaffSignIn() {
           <CardHeader>
             <CardTitle>Sign In to Your Account</CardTitle>
             <CardDescription>
-              Enter your email address to access your staff verification dashboard
+              Enter your email address to access your staff verification
+              dashboard
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
@@ -138,8 +155,8 @@ export default function StaffSignIn() {
                   type="email"
                   placeholder="your.email@organization.com"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={errors.email ? 'border-red-500' : ''}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  className={errors.email ? "border-red-500" : ""}
                 />
                 {errors.email && (
                   <p className="text-sm text-red-600 flex items-center">
@@ -156,16 +173,14 @@ export default function StaffSignIn() {
               <Alert>
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Staff members only need their email address to sign in. Your wallet address is stored securely and used automatically for verification tasks.
+                  Staff members only need their email address to sign in. Your
+                  wallet address is stored securely and used automatically for
+                  verification tasks.
                 </AlertDescription>
               </Alert>
 
               {/* Submit Button */}
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -184,7 +199,7 @@ export default function StaffSignIn() {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
+            Don't have an account?{" "}
             <Link to="/register/staff" className="text-primary hover:underline">
               Register as Staff
             </Link>

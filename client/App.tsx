@@ -42,7 +42,10 @@ export default function App() {
 
               {/* Registration Routes */}
               <Route path="/register" element={<Registration />} />
-              <Route path="/register/student" element={<StudentRegistration />} />
+              <Route
+                path="/register/student"
+                element={<StudentRegistration />}
+              />
               <Route path="/register/staff" element={<StaffRegistration />} />
               <Route path="/register/issuer" element={<IssuerRegistration />} />
 

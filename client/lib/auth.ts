@@ -7,7 +7,7 @@ export interface UserProfile {
   name: string;
   email: string;
   walletAddress: string;
-  role: 'student' | 'staff' | 'issuer';
+  role: "student" | "staff" | "issuer";
   organization?: string; // For staff
   institution?: string; // For issuer
   createdAt: string;
@@ -51,15 +51,15 @@ export interface StoredUser {
   name: string;
   email: string;
   walletAddress: string;
-  role: 'student' | 'staff' | 'issuer';
+  role: "student" | "staff" | "issuer";
   organization?: string;
   institution?: string;
   createdAt: string;
 }
 
-const USER_PROFILE_KEY = 'credvault_user_profile';
-const ISSUED_CREDENTIALS_KEY = 'credvault_issued_credentials';
-const REGISTERED_USERS_KEY = 'credvault_registered_users';
+const USER_PROFILE_KEY = "credvault_user_profile";
+const ISSUED_CREDENTIALS_KEY = "credvault_issued_credentials";
+const REGISTERED_USERS_KEY = "credvault_registered_users";
 
 /**
  * Save user profile to localStorage
@@ -76,7 +76,7 @@ export function getCurrentUser(): UserProfile | null {
     const stored = localStorage.getItem(USER_PROFILE_KEY);
     return stored ? JSON.parse(stored) : null;
   } catch (error) {
-    console.error('Error reading user profile:', error);
+    console.error("Error reading user profile:", error);
     return null;
   }
 }
@@ -96,7 +96,7 @@ function getRegisteredUsers(): StoredUser[] {
     const stored = localStorage.getItem(REGISTERED_USERS_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('Error reading registered users:', error);
+    console.error("Error reading registered users:", error);
     return [];
   }
 }
@@ -108,7 +108,7 @@ function saveToRegisteredUsers(user: StoredUser): void {
   const users = getRegisteredUsers();
 
   // Remove existing user with same email (update scenario)
-  const filteredUsers = users.filter(u => u.email !== user.email);
+  const filteredUsers = users.filter((u) => u.email !== user.email);
   filteredUsers.push(user);
 
   localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(filteredUsers));
@@ -119,18 +119,27 @@ function saveToRegisteredUsers(user: StoredUser): void {
  */
 function findUserByEmail(email: string): StoredUser | null {
   const users = getRegisteredUsers();
-  return users.find(user => user.email.toLowerCase() === email.toLowerCase()) || null;
+  return (
+    users.find((user) => user.email.toLowerCase() === email.toLowerCase()) ||
+    null
+  );
 }
 
 /**
  * Find user by email and wallet address
  */
-function findUserByEmailAndWallet(email: string, walletAddress: string): StoredUser | null {
+function findUserByEmailAndWallet(
+  email: string,
+  walletAddress: string,
+): StoredUser | null {
   const users = getRegisteredUsers();
-  return users.find(user =>
-    user.email.toLowerCase() === email.toLowerCase() &&
-    user.walletAddress === walletAddress
-  ) || null;
+  return (
+    users.find(
+      (user) =>
+        user.email.toLowerCase() === email.toLowerCase() &&
+        user.walletAddress === walletAddress,
+    ) || null
+  );
 }
 
 /**
@@ -147,7 +156,7 @@ export function signInStudent(data: StudentSignIn): UserProfile | null {
 
   const user = findUserByEmailAndWallet(data.email, data.walletAddress);
 
-  if (!user || user.role !== 'student') {
+  if (!user || user.role !== "student") {
     return null;
   }
 
@@ -176,7 +185,7 @@ export function signInStaff(data: StaffSignIn): UserProfile | null {
 
   const user = findUserByEmail(data.email);
 
-  if (!user || user.role !== 'staff') {
+  if (!user || user.role !== "staff") {
     return null;
   }
 
@@ -205,7 +214,7 @@ export function signInIssuer(data: IssuerSignIn): UserProfile | null {
 
   const user = findUserByEmail(data.email);
 
-  if (!user || user.role !== 'issuer') {
+  if (!user || user.role !== "issuer") {
     return null;
   }
 
@@ -239,7 +248,7 @@ export function registerStudent(data: StudentRegistration): UserProfile {
     name: data.name,
     email: data.email,
     walletAddress: data.walletAddress,
-    role: 'student',
+    role: "student",
     createdAt: new Date().toISOString(),
   };
 
@@ -273,7 +282,7 @@ export function registerStaff(data: StaffRegistration): UserProfile {
     name: data.name,
     email: data.email,
     walletAddress: data.walletAddress,
-    role: 'staff',
+    role: "staff",
     organization: data.organization,
     createdAt: new Date().toISOString(),
   };
@@ -309,7 +318,7 @@ export function registerIssuer(data: IssuerRegistration): UserProfile {
     name: data.name,
     email: data.email,
     walletAddress: data.walletAddress,
-    role: 'issuer',
+    role: "issuer",
     institution: data.institution,
     createdAt: new Date().toISOString(),
   };
@@ -342,14 +351,14 @@ export function isAuthenticated(): boolean {
  */
 export function getRoleDashboardPath(role: string): string {
   switch (role) {
-    case 'student':
-      return '/student';
-    case 'staff':
-      return '/staff';
-    case 'issuer':
-      return '/issuer';
+    case "student":
+      return "/student";
+    case "staff":
+      return "/staff";
+    case "issuer":
+      return "/issuer";
     default:
-      return '/';
+      return "/";
   }
 }
 
@@ -372,19 +381,19 @@ export function isValidEmail(email: string): boolean {
  * Validate wallet address format
  */
 export function isValidWallet(address: string): boolean {
-  if (!address || typeof address !== 'string') {
+  if (!address || typeof address !== "string") {
     return false;
   }
 
   const trimmed = address.trim();
 
   // Hex address validation
-  if (trimmed.startsWith('0x')) {
+  if (trimmed.startsWith("0x")) {
     return /^0x[a-fA-F0-9]{1,64}$/.test(trimmed);
   }
 
   // Named address validation (like username.apt)
-  if (trimmed.includes('.apt')) {
+  if (trimmed.includes(".apt")) {
     return /^[a-zA-Z0-9_-]+\.apt$/.test(trimmed);
   }
 
@@ -404,18 +413,20 @@ export interface IssuedCredential {
   issuerName: string;
   issuerInstitution: string;
   issuedDate: string;
-  status: 'issued' | 'pending' | 'revoked';
+  status: "issued" | "pending" | "revoked";
 }
 
 /**
  * Save issued credential
  */
-export function saveIssuedCredential(credential: Omit<IssuedCredential, 'id' | 'issuedDate' | 'status'>): IssuedCredential {
+export function saveIssuedCredential(
+  credential: Omit<IssuedCredential, "id" | "issuedDate" | "status">,
+): IssuedCredential {
   const issuedCredential: IssuedCredential = {
     ...credential,
     id: `cred_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     issuedDate: new Date().toISOString(),
-    status: 'issued',
+    status: "issued",
   };
 
   const existing = getIssuedCredentials();
@@ -433,7 +444,7 @@ export function getIssuedCredentials(): IssuedCredential[] {
     const stored = localStorage.getItem(ISSUED_CREDENTIALS_KEY);
     return stored ? JSON.parse(stored) : [];
   } catch (error) {
-    console.error('Error reading issued credentials:', error);
+    console.error("Error reading issued credentials:", error);
     return [];
   }
 }
@@ -441,13 +452,21 @@ export function getIssuedCredentials(): IssuedCredential[] {
 /**
  * Get credentials issued by a specific issuer
  */
-export function getCredentialsByIssuer(issuerWalletAddress: string): IssuedCredential[] {
-  return getIssuedCredentials().filter(cred => cred.issuerWalletAddress === issuerWalletAddress);
+export function getCredentialsByIssuer(
+  issuerWalletAddress: string,
+): IssuedCredential[] {
+  return getIssuedCredentials().filter(
+    (cred) => cred.issuerWalletAddress === issuerWalletAddress,
+  );
 }
 
 /**
  * Get credentials for a specific student
  */
-export function getCredentialsForStudent(studentWalletAddress: string): IssuedCredential[] {
-  return getIssuedCredentials().filter(cred => cred.studentWalletAddress === studentWalletAddress);
+export function getCredentialsForStudent(
+  studentWalletAddress: string,
+): IssuedCredential[] {
+  return getIssuedCredentials().filter(
+    (cred) => cred.studentWalletAddress === studentWalletAddress,
+  );
 }

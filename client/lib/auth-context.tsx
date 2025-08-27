@@ -1,5 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { getCurrentUser, logout, type UserProfile } from './auth';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
+import { getCurrentUser, logout, type UserProfile } from "./auth";
 
 interface AuthContextType {
   user: UserProfile | null;
@@ -27,7 +33,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
         const profile = getCurrentUser();
         setUser(profile);
       } catch (error) {
-        console.error('Error loading user profile:', error);
+        console.error("Error loading user profile:", error);
         setUser(null);
       } finally {
         setIsLoading(false);
@@ -52,12 +58,15 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
     const updatedProfile = { ...user, ...updates };
     setUser(updatedProfile);
-    
+
     // Save to localStorage
     try {
-      localStorage.setItem('credvault_user_profile', JSON.stringify(updatedProfile));
+      localStorage.setItem(
+        "credvault_user_profile",
+        JSON.stringify(updatedProfile),
+      );
     } catch (error) {
-      console.error('Error saving updated profile:', error);
+      console.error("Error saving updated profile:", error);
     }
   };
 
@@ -70,17 +79,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
     updateProfile,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextType {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }
@@ -89,38 +94,38 @@ export function useAuth(): AuthContextType {
 export function useStudent() {
   const { user, isAuthenticated } = useAuth();
   return {
-    isStudent: isAuthenticated && user?.role === 'student',
-    student: user?.role === 'student' ? user : null,
+    isStudent: isAuthenticated && user?.role === "student",
+    student: user?.role === "student" ? user : null,
   };
 }
 
 export function useStaff() {
   const { user, isAuthenticated } = useAuth();
   return {
-    isStaff: isAuthenticated && user?.role === 'staff',
-    staff: user?.role === 'staff' ? user : null,
+    isStaff: isAuthenticated && user?.role === "staff",
+    staff: user?.role === "staff" ? user : null,
   };
 }
 
 export function useIssuer() {
   const { user, isAuthenticated } = useAuth();
   return {
-    isIssuer: isAuthenticated && user?.role === 'issuer',
-    issuer: user?.role === 'issuer' ? user : null,
+    isIssuer: isAuthenticated && user?.role === "issuer",
+    issuer: user?.role === "issuer" ? user : null,
   };
 }
 
 // Protected route component
 interface ProtectedRouteProps {
   children: ReactNode;
-  roles?: ('student' | 'staff' | 'issuer')[];
+  roles?: ("student" | "staff" | "issuer")[];
   fallback?: ReactNode;
 }
 
-export function ProtectedRoute({ 
-  children, 
-  roles, 
-  fallback = <div>Access denied. Please log in with the appropriate role.</div> 
+export function ProtectedRoute({
+  children,
+  roles,
+  fallback = <div>Access denied. Please log in with the appropriate role.</div>,
 }: ProtectedRouteProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
 
@@ -148,12 +153,16 @@ export function ProtectedRoute({
 
 // Role-based navigation component
 interface RoleGuardProps {
-  roles: ('student' | 'staff' | 'issuer')[];
+  roles: ("student" | "staff" | "issuer")[];
   children: ReactNode;
   fallback?: ReactNode;
 }
 
-export function RoleGuard({ roles, children, fallback = null }: RoleGuardProps) {
+export function RoleGuard({
+  roles,
+  children,
+  fallback = null,
+}: RoleGuardProps) {
   const { user, isAuthenticated } = useAuth();
 
   if (!isAuthenticated || !user || !roles.includes(user.role)) {

@@ -1,6 +1,12 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Shield, Award, ArrowRight } from "lucide-react";
@@ -10,29 +16,30 @@ export default function SignIn() {
 
   const roles = [
     {
-      id: 'student',
-      title: 'Student',
-      description: 'Access your credentials and manage your academic achievements',
+      id: "student",
+      title: "Student",
+      description:
+        "Access your credentials and manage your academic achievements",
       icon: Users,
-      signInRequirements: ['Email address', 'Aptos wallet address'],
-      path: '/signin/student'
+      signInRequirements: ["Email address", "Aptos wallet address"],
+      path: "/signin/student",
     },
     {
-      id: 'staff',
-      title: 'Staff (Verifier)',
-      description: 'Verify student credentials for your organization',
+      id: "staff",
+      title: "Staff (Verifier)",
+      description: "Verify student credentials for your organization",
       icon: Shield,
-      signInRequirements: ['Email address only'],
-      path: '/signin/staff'
+      signInRequirements: ["Email address only"],
+      path: "/signin/staff",
     },
     {
-      id: 'issuer',
-      title: 'Issuer',
-      description: 'Issue and manage credentials for your institution',
+      id: "issuer",
+      title: "Issuer",
+      description: "Issue and manage credentials for your institution",
       icon: Award,
-      signInRequirements: ['Email address only'],
-      path: '/signin/issuer'
-    }
+      signInRequirements: ["Email address only"],
+      path: "/signin/issuer",
+    },
   ];
 
   return (
@@ -48,7 +55,7 @@ export default function SignIn() {
               <span className="font-bold text-xl text-gray-900">CredVault</span>
               <Badge variant="secondary">Sign In</Badge>
             </Link>
-            
+
             <div className="flex items-center space-x-4">
               <Link to="/" className="text-gray-700 hover:text-primary">
                 Home
@@ -81,7 +88,10 @@ export default function SignIn() {
           {roles.map((role) => {
             const IconComponent = role.icon;
             return (
-              <Card key={role.id} className="relative hover:shadow-lg transition-shadow cursor-pointer group">
+              <Card
+                key={role.id}
+                className="relative hover:shadow-lg transition-shadow cursor-pointer group"
+              >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-100 to-cyan-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <IconComponent className="h-8 w-8 text-purple-600" />
@@ -91,21 +101,26 @@ export default function SignIn() {
                     {role.description}
                   </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <h4 className="font-medium text-sm text-gray-900">Sign-in Requirements:</h4>
+                    <h4 className="font-medium text-sm text-gray-900">
+                      Sign-in Requirements:
+                    </h4>
                     <ul className="space-y-1">
                       {role.signInRequirements.map((requirement, index) => (
-                        <li key={index} className="text-sm text-gray-600 flex items-center">
+                        <li
+                          key={index}
+                          className="text-sm text-gray-600 flex items-center"
+                        >
                           <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2" />
                           {requirement}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={() => navigate(role.path)}
                     className="w-full group-hover:bg-primary-600"
                   >
@@ -128,10 +143,10 @@ export default function SignIn() {
               Register for a new account to get started with CredVault.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={() => navigate('/register')}>
+              <Button onClick={() => navigate("/register")}>
                 Register New Account
               </Button>
-              <Button variant="outline" onClick={() => navigate('/verify')}>
+              <Button variant="outline" onClick={() => navigate("/verify")}>
                 Just Verify Credentials
               </Button>
             </div>

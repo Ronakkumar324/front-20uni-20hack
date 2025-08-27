@@ -9,28 +9,45 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
-import { Shield, Award, Users, QrCode, Lock, CheckCircle, UserPlus, LogOut } from "lucide-react";
+import {
+  Shield,
+  Award,
+  Users,
+  QrCode,
+  Lock,
+  CheckCircle,
+  UserPlus,
+  LogOut,
+} from "lucide-react";
 
 export default function Index() {
   const { user, isAuthenticated, logout } = useAuth();
 
   const getRoleDashboardPath = () => {
-    if (!user) return '/register';
+    if (!user) return "/register";
     switch (user.role) {
-      case 'student': return '/student';
-      case 'staff': return '/staff';
-      case 'issuer': return '/issuer';
-      default: return '/register';
+      case "student":
+        return "/student";
+      case "staff":
+        return "/staff";
+      case "issuer":
+        return "/issuer";
+      default:
+        return "/register";
     }
   };
 
   const getRoleDisplayName = () => {
-    if (!user) return 'Guest';
+    if (!user) return "Guest";
     switch (user.role) {
-      case 'student': return 'Student';
-      case 'staff': return 'Staff';
-      case 'issuer': return 'Issuer';
-      default: return 'User';
+      case "student":
+        return "Student";
+      case "staff":
+        return "Staff";
+      case "issuer":
+        return "Issuer";
+      default:
+        return "User";
     }
   };
 
@@ -60,7 +77,7 @@ export default function Index() {
               <Link to="/verify" className="text-gray-700 hover:text-primary">
                 Verify
               </Link>
-              
+
               {isAuthenticated ? (
                 <div className="flex items-center space-x-4">
                   <div className="flex items-center space-x-2">
@@ -112,7 +129,7 @@ export default function Index() {
               permanently verifiable academic credentials. Certificates, course
               completions, and achievements that follow you everywhere.
             </p>
-            
+
             {/* Dynamic CTA based on auth status */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (
@@ -158,8 +175,8 @@ export default function Index() {
                 Choose Your Role
               </h2>
               <p className="text-gray-600 max-w-2xl mx-auto">
-                Different roles have different capabilities in the CredVault ecosystem.
-                Select the one that best describes you.
+                Different roles have different capabilities in the CredVault
+                ecosystem. Select the one that best describes you.
               </p>
             </div>
 
@@ -170,8 +187,9 @@ export default function Index() {
                     <Users className="h-12 w-12 text-blue-500 mb-4 mx-auto group-hover:scale-110 transition-transform" />
                     <CardTitle>Student</CardTitle>
                     <CardDescription>
-                      Request and manage your academic credentials. View your achievements
-                      and share them with employers or institutions.
+                      Request and manage your academic credentials. View your
+                      achievements and share them with employers or
+                      institutions.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -206,8 +224,8 @@ export default function Index() {
                     <Award className="h-12 w-12 text-purple-500 mb-4 mx-auto group-hover:scale-110 transition-transform" />
                     <CardTitle>Issuer</CardTitle>
                     <CardDescription>
-                      Issue verifiable credentials for your institution.
-                      Mint and manage academic NFTs for students.
+                      Issue verifiable credentials for your institution. Mint
+                      and manage academic NFTs for students.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -331,7 +349,8 @@ export default function Index() {
                     Welcome back, {user?.name}!
                   </h2>
                   <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Continue managing your credentials and exploring the CredVault ecosystem.
+                    Continue managing your credentials and exploring the
+                    CredVault ecosystem.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">
                     <Button
@@ -354,8 +373,8 @@ export default function Index() {
                     Ready to Secure Your Credentials?
                   </h2>
                   <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                    Join thousands of students and institutions using CredVault to
-                    issue, store, and verify academic achievements on the
+                    Join thousands of students and institutions using CredVault
+                    to issue, store, and verify academic achievements on the
                     blockchain.
                   </p>
                   <div className="flex flex-col sm:flex-row gap-4 justify-center">

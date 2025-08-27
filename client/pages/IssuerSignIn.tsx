@@ -1,12 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Award, ArrowLeft, AlertCircle, LogIn, CheckCircle } from "lucide-react";
+import {
+  Award,
+  ArrowLeft,
+  AlertCircle,
+  LogIn,
+  CheckCircle,
+} from "lucide-react";
 import { signInIssuer, isValidEmail, type IssuerSignIn } from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
@@ -15,16 +27,16 @@ export default function IssuerSignIn() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState<IssuerSignIn>({
-    email: ''
+    email: "",
   });
   const [errors, setErrors] = useState<Partial<IssuerSignIn>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: keyof IssuerSignIn, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -32,9 +44,9 @@ export default function IssuerSignIn() {
     const newErrors: Partial<IssuerSignIn> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!isValidEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     setErrors(newErrors);
@@ -43,7 +55,7 @@ export default function IssuerSignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -52,30 +64,31 @@ export default function IssuerSignIn() {
 
     try {
       const profile = signInIssuer(formData);
-      
+
       if (!profile) {
         toast.error("Sign In Failed", {
-          description: "No issuer account found with this email address. Please check your email or register a new account."
+          description:
+            "No issuer account found with this email address. Please check your email or register a new account.",
         });
         return;
       }
 
       // Login the user
       login(profile);
-      
+
       toast.success("Sign In Successful!", {
-        description: `Welcome back, ${profile.name}! Redirecting to your dashboard...`
+        description: `Welcome back, ${profile.name}! Redirecting to your dashboard...`,
       });
 
       // Redirect to issuer dashboard after a short delay
       setTimeout(() => {
-        navigate('/issuer');
+        navigate("/issuer");
       }, 1500);
-
     } catch (error: any) {
-      console.error('Sign in failed:', error);
+      console.error("Sign in failed:", error);
       toast.error("Sign In Failed", {
-        description: error.message || "Please check your credentials and try again."
+        description:
+          error.message || "Please check your credentials and try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -95,9 +108,12 @@ export default function IssuerSignIn() {
               <span className="font-bold text-xl text-gray-900">CredVault</span>
               <Badge variant="secondary">Issuer Sign In</Badge>
             </Link>
-            
+
             <div className="flex items-center space-x-4">
-              <Link to="/signin" className="text-gray-700 hover:text-primary flex items-center">
+              <Link
+                to="/signin"
+                className="text-gray-700 hover:text-primary flex items-center"
+              >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back to Sign In
               </Link>
@@ -127,7 +143,7 @@ export default function IssuerSignIn() {
               Enter your email address to access your issuer dashboard
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
@@ -138,8 +154,8 @@ export default function IssuerSignIn() {
                   type="email"
                   placeholder="your.email@institution.edu"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={errors.email ? 'border-red-500' : ''}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  className={errors.email ? "border-red-500" : ""}
                 />
                 {errors.email && (
                   <p className="text-sm text-red-600 flex items-center">
@@ -156,16 +172,14 @@ export default function IssuerSignIn() {
               <Alert>
                 <CheckCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Issuers only need their email address to sign in. Your wallet address is stored securely and used automatically for credential minting.
+                  Issuers only need their email address to sign in. Your wallet
+                  address is stored securely and used automatically for
+                  credential minting.
                 </AlertDescription>
               </Alert>
 
               {/* Submit Button */}
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -184,8 +198,11 @@ export default function IssuerSignIn() {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/register/issuer" className="text-primary hover:underline">
+            Don't have an account?{" "}
+            <Link
+              to="/register/issuer"
+              className="text-primary hover:underline"
+            >
               Register as Issuer
             </Link>
           </p>

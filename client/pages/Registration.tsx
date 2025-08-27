@@ -1,6 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Users, Shield, Award, ArrowRight } from "lucide-react";
@@ -10,29 +16,42 @@ export default function Registration() {
 
   const roles = [
     {
-      id: 'student',
-      title: 'Student',
-      description: 'Request and manage your academic credentials',
+      id: "student",
+      title: "Student",
+      description: "Request and manage your academic credentials",
       icon: Users,
-      features: ['Request NFT credentials', 'View your credentials', 'Share achievements'],
-      path: '/register/student'
+      features: [
+        "Request NFT credentials",
+        "View your credentials",
+        "Share achievements",
+      ],
+      path: "/register/student",
     },
     {
-      id: 'staff',
-      title: 'Staff (Verifier)',
-      description: 'Verify student credentials and manage verification processes',
+      id: "staff",
+      title: "Staff (Verifier)",
+      description:
+        "Verify student credentials and manage verification processes",
       icon: Shield,
-      features: ['Verify student credentials', 'Check wallet NFTs', 'Organizational verification'],
-      path: '/register/staff'
+      features: [
+        "Verify student credentials",
+        "Check wallet NFTs",
+        "Organizational verification",
+      ],
+      path: "/register/staff",
     },
     {
-      id: 'issuer',
-      title: 'Issuer',
-      description: 'Issue and manage academic credentials for your institution',
+      id: "issuer",
+      title: "Issuer",
+      description: "Issue and manage academic credentials for your institution",
       icon: Award,
-      features: ['Mint NFT credentials', 'Manage issued credentials', 'Institutional dashboard'],
-      path: '/register/issuer'
-    }
+      features: [
+        "Mint NFT credentials",
+        "Manage issued credentials",
+        "Institutional dashboard",
+      ],
+      path: "/register/issuer",
+    },
   ];
 
   return (
@@ -48,7 +67,7 @@ export default function Registration() {
               <span className="font-bold text-xl text-gray-900">CredVault</span>
               <Badge variant="secondary">Registration</Badge>
             </Link>
-            
+
             <div className="flex items-center space-x-4">
               <Link to="/" className="text-gray-700 hover:text-primary">
                 Home
@@ -68,8 +87,9 @@ export default function Registration() {
             Join CredVault
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Choose your role to get started with blockchain-verified academic credentials. 
-            Each role has specific features designed for your needs.
+            Choose your role to get started with blockchain-verified academic
+            credentials. Each role has specific features designed for your
+            needs.
           </p>
         </div>
 
@@ -78,7 +98,10 @@ export default function Registration() {
           {roles.map((role) => {
             const IconComponent = role.icon;
             return (
-              <Card key={role.id} className="relative hover:shadow-lg transition-shadow cursor-pointer group">
+              <Card
+                key={role.id}
+                className="relative hover:shadow-lg transition-shadow cursor-pointer group"
+              >
                 <CardHeader className="text-center pb-4">
                   <div className="mx-auto w-16 h-16 bg-gradient-to-br from-purple-100 to-cyan-100 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                     <IconComponent className="h-8 w-8 text-purple-600" />
@@ -88,21 +111,26 @@ export default function Registration() {
                     {role.description}
                   </CardDescription>
                 </CardHeader>
-                
+
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
-                    <h4 className="font-medium text-sm text-gray-900">Features:</h4>
+                    <h4 className="font-medium text-sm text-gray-900">
+                      Features:
+                    </h4>
                     <ul className="space-y-1">
                       {role.features.map((feature, index) => (
-                        <li key={index} className="text-sm text-gray-600 flex items-center">
+                        <li
+                          key={index}
+                          className="text-sm text-gray-600 flex items-center"
+                        >
                           <div className="w-1.5 h-1.5 bg-purple-500 rounded-full mr-2" />
                           {feature}
                         </li>
                       ))}
                     </ul>
                   </div>
-                  
-                  <Button 
+
+                  <Button
                     onClick={() => navigate(role.path)}
                     className="w-full group-hover:bg-primary-600"
                   >
@@ -125,16 +153,23 @@ export default function Registration() {
               Sign in to access your dashboard.
             </p>
             <div className="flex justify-center space-x-4">
-              <Button onClick={() => navigate('/signin')}>
-                Sign In
-              </Button>
-              <Button variant="outline" onClick={() => navigate('/signin/student')}>
+              <Button onClick={() => navigate("/signin")}>Sign In</Button>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/signin/student")}
+              >
                 Student Sign In
               </Button>
-              <Button variant="outline" onClick={() => navigate('/signin/staff')}>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/signin/staff")}
+              >
                 Staff Sign In
               </Button>
-              <Button variant="outline" onClick={() => navigate('/signin/issuer')}>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/signin/issuer")}
+              >
                 Issuer Sign In
               </Button>
             </div>

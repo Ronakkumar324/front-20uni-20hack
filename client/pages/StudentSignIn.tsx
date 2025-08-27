@@ -1,13 +1,24 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Users, ArrowLeft, AlertCircle, LogIn } from "lucide-react";
-import { signInStudent, isValidEmail, isValidWallet, type StudentSignIn } from "@/lib/auth";
+import {
+  signInStudent,
+  isValidEmail,
+  isValidWallet,
+  type StudentSignIn,
+} from "@/lib/auth";
 import { useAuth } from "@/lib/auth-context";
 import { toast } from "sonner";
 
@@ -15,17 +26,17 @@ export default function StudentSignIn() {
   const navigate = useNavigate();
   const { login } = useAuth();
   const [formData, setFormData] = useState<StudentSignIn>({
-    email: '',
-    walletAddress: ''
+    email: "",
+    walletAddress: "",
   });
   const [errors, setErrors] = useState<Partial<StudentSignIn>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleInputChange = (field: keyof StudentSignIn, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
@@ -33,15 +44,16 @@ export default function StudentSignIn() {
     const newErrors: Partial<StudentSignIn> = {};
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!isValidEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.walletAddress.trim()) {
-      newErrors.walletAddress = 'Wallet address is required';
+      newErrors.walletAddress = "Wallet address is required";
     } else if (!isValidWallet(formData.walletAddress)) {
-      newErrors.walletAddress = 'Please enter a valid Aptos wallet address (0x... or username.apt)';
+      newErrors.walletAddress =
+        "Please enter a valid Aptos wallet address (0x... or username.apt)";
     }
 
     setErrors(newErrors);
@@ -50,7 +62,7 @@ export default function StudentSignIn() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -59,30 +71,31 @@ export default function StudentSignIn() {
 
     try {
       const profile = signInStudent(formData);
-      
+
       if (!profile) {
         toast.error("Sign In Failed", {
-          description: "No student account found with this email and wallet address combination. Please check your credentials or register a new account."
+          description:
+            "No student account found with this email and wallet address combination. Please check your credentials or register a new account.",
         });
         return;
       }
 
       // Login the user
       login(profile);
-      
+
       toast.success("Sign In Successful!", {
-        description: `Welcome back, ${profile.name}! Redirecting to your dashboard...`
+        description: `Welcome back, ${profile.name}! Redirecting to your dashboard...`,
       });
 
       // Redirect to student dashboard after a short delay
       setTimeout(() => {
-        navigate('/student');
+        navigate("/student");
       }, 1500);
-
     } catch (error: any) {
-      console.error('Sign in failed:', error);
+      console.error("Sign in failed:", error);
       toast.error("Sign In Failed", {
-        description: error.message || "Please check your credentials and try again."
+        description:
+          error.message || "Please check your credentials and try again.",
       });
     } finally {
       setIsSubmitting(false);
@@ -102,9 +115,12 @@ export default function StudentSignIn() {
               <span className="font-bold text-xl text-gray-900">CredVault</span>
               <Badge variant="secondary">Student Sign In</Badge>
             </Link>
-            
+
             <div className="flex items-center space-x-4">
-              <Link to="/signin" className="text-gray-700 hover:text-primary flex items-center">
+              <Link
+                to="/signin"
+                className="text-gray-700 hover:text-primary flex items-center"
+              >
                 <ArrowLeft className="h-4 w-4 mr-1" />
                 Back to Sign In
               </Link>
@@ -123,7 +139,8 @@ export default function StudentSignIn() {
             Student Sign In
           </h1>
           <p className="text-gray-600">
-            Sign in to access your credential dashboard and manage your achievements
+            Sign in to access your credential dashboard and manage your
+            achievements
           </p>
         </div>
 
@@ -131,10 +148,11 @@ export default function StudentSignIn() {
           <CardHeader>
             <CardTitle>Sign In to Your Account</CardTitle>
             <CardDescription>
-              Enter your email and wallet address to access your student dashboard
+              Enter your email and wallet address to access your student
+              dashboard
             </CardDescription>
           </CardHeader>
-          
+
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Field */}
@@ -145,8 +163,8 @@ export default function StudentSignIn() {
                   type="email"
                   placeholder="your.email@university.edu"
                   value={formData.email}
-                  onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={errors.email ? 'border-red-500' : ''}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
+                  className={errors.email ? "border-red-500" : ""}
                 />
                 {errors.email && (
                   <p className="text-sm text-red-600 flex items-center">
@@ -164,8 +182,10 @@ export default function StudentSignIn() {
                   type="text"
                   placeholder="0x1234... or username.apt"
                   value={formData.walletAddress}
-                  onChange={(e) => handleInputChange('walletAddress', e.target.value)}
-                  className={errors.walletAddress ? 'border-red-500' : ''}
+                  onChange={(e) =>
+                    handleInputChange("walletAddress", e.target.value)
+                  }
+                  className={errors.walletAddress ? "border-red-500" : ""}
                 />
                 {errors.walletAddress && (
                   <p className="text-sm text-red-600 flex items-center">
@@ -182,16 +202,13 @@ export default function StudentSignIn() {
               <Alert>
                 <AlertCircle className="h-4 w-4" />
                 <AlertDescription>
-                  Students need both email and wallet address to sign in for security and NFT management.
+                  Students need both email and wallet address to sign in for
+                  security and NFT management.
                 </AlertDescription>
               </Alert>
 
               {/* Submit Button */}
-              <Button 
-                type="submit" 
-                className="w-full" 
-                disabled={isSubmitting}
-              >
+              <Button type="submit" className="w-full" disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
@@ -210,8 +227,11 @@ export default function StudentSignIn() {
 
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/register/student" className="text-primary hover:underline">
+            Don't have an account?{" "}
+            <Link
+              to="/register/student"
+              className="text-primary hover:underline"
+            >
               Register as Student
             </Link>
           </p>

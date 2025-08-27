@@ -22,11 +22,11 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/lib/auth-context";
-import { 
-  saveIssuedCredential, 
-  getCredentialsByIssuer, 
-  isValidWallet, 
-  type IssuedCredential 
+import {
+  saveIssuedCredential,
+  getCredentialsByIssuer,
+  isValidWallet,
+  type IssuedCredential,
 } from "@/lib/auth";
 import { toast } from "sonner";
 import {
@@ -50,7 +50,9 @@ export default function IssuerDashboard() {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [issuedCredentials, setIssuedCredentials] = useState<IssuedCredential[]>([]);
+  const [issuedCredentials, setIssuedCredentials] = useState<
+    IssuedCredential[]
+  >([]);
   const [formData, setFormData] = useState({
     recipientAddress: "",
     credentialTitle: "",
@@ -66,12 +68,13 @@ export default function IssuerDashboard() {
     if (!isAuthenticated) {
       return;
     }
-    
-    if (user?.role !== 'issuer') {
+
+    if (user?.role !== "issuer") {
       toast.error("Access Denied", {
-        description: "This dashboard is only for issuers. Please register as an issuer."
+        description:
+          "This dashboard is only for issuers. Please register as an issuer.",
       });
-      navigate('/register');
+      navigate("/register");
       return;
     }
 
@@ -93,14 +96,14 @@ export default function IssuerDashboard() {
   const handleMintCredential = async () => {
     if (!isFormValid()) {
       toast.error("Invalid Form", {
-        description: "Please fill in all required fields."
+        description: "Please fill in all required fields.",
       });
       return;
     }
 
     if (!isValidWallet(formData.recipientAddress)) {
       toast.error("Invalid Wallet Address", {
-        description: "Please enter a valid Aptos wallet address."
+        description: "Please enter a valid Aptos wallet address.",
       });
       return;
     }
@@ -115,7 +118,7 @@ export default function IssuerDashboard() {
           parsedMetadata = JSON.parse(formData.additionalMetadata);
         } catch (error) {
           toast.error("Invalid JSON", {
-            description: "Additional metadata must be valid JSON format."
+            description: "Additional metadata must be valid JSON format.",
           });
           setIsLoading(false);
           return;
@@ -132,7 +135,7 @@ export default function IssuerDashboard() {
         studentWalletAddress: formData.recipientAddress.trim(),
         issuerWalletAddress: user!.walletAddress,
         issuerName: user!.name,
-        issuerInstitution: user!.institution || 'Unknown Institution',
+        issuerInstitution: user!.institution || "Unknown Institution",
       });
 
       // Reload credentials
@@ -155,7 +158,8 @@ export default function IssuerDashboard() {
     } catch (error) {
       console.error("Failed to mint credential:", error);
       toast.error("Failed to Mint Credential", {
-        description: "An error occurred while issuing the credential. Please try again.",
+        description:
+          "An error occurred while issuing the credential. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -173,9 +177,9 @@ export default function IssuerDashboard() {
 
   const handleLogout = () => {
     logout();
-    navigate('/');
+    navigate("/");
     toast.success("Logged Out", {
-      description: "You have been logged out successfully."
+      description: "You have been logged out successfully.",
     });
   };
 
@@ -189,15 +193,33 @@ export default function IssuerDashboard() {
               <div className="flex items-center space-x-2">
                 <Link to="/" className="flex items-center space-x-2">
                   <Shield className="h-8 w-8 text-primary" />
-                  <span className="font-bold text-xl text-gray-900">CredVault</span>
+                  <span className="font-bold text-xl text-gray-900">
+                    CredVault
+                  </span>
                 </Link>
-                <Badge variant="secondary" className="ml-2">Issuer</Badge>
+                <Badge variant="secondary" className="ml-2">
+                  Issuer
+                </Badge>
               </div>
               <div className="flex items-center space-x-4">
-                <Link to="/verify" className="text-gray-700 hover:text-primary">Verify</Link>
-                <Link to="/student" className="text-gray-700 hover:text-primary">Student</Link>
-                <Link to="/staff" className="text-gray-700 hover:text-primary">Staff</Link>
-                <Link to="/register" className="text-gray-700 hover:text-primary">Register</Link>
+                <Link to="/verify" className="text-gray-700 hover:text-primary">
+                  Verify
+                </Link>
+                <Link
+                  to="/student"
+                  className="text-gray-700 hover:text-primary"
+                >
+                  Student
+                </Link>
+                <Link to="/staff" className="text-gray-700 hover:text-primary">
+                  Staff
+                </Link>
+                <Link
+                  to="/register"
+                  className="text-gray-700 hover:text-primary"
+                >
+                  Register
+                </Link>
               </div>
             </div>
           </div>
@@ -206,23 +228,26 @@ export default function IssuerDashboard() {
         <div className="text-center py-16">
           <div className="max-w-md mx-auto">
             <UserPlus className="h-16 w-16 text-gray-400 mx-auto mb-6" />
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Issuer Registration Required</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">
+              Issuer Registration Required
+            </h2>
             <p className="text-gray-600 mb-8">
-              Please register as an issuer to access the credential minting dashboard and manage your institution's credentials.
+              Please register as an issuer to access the credential minting
+              dashboard and manage your institution's credentials.
             </p>
             <div className="space-y-4">
-              <Button 
-                onClick={() => navigate('/register/issuer')} 
-                size="lg" 
+              <Button
+                onClick={() => navigate("/register/issuer")}
+                size="lg"
                 className="w-full bg-primary hover:bg-primary/90"
               >
                 <UserPlus className="h-5 w-5 mr-2" />
                 Register as Issuer
               </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => navigate('/register')} 
-                size="lg" 
+              <Button
+                variant="outline"
+                onClick={() => navigate("/register")}
+                size="lg"
                 className="w-full"
               >
                 View All Registration Options
@@ -243,16 +268,28 @@ export default function IssuerDashboard() {
             <div className="flex items-center space-x-2">
               <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-8 w-8 text-primary" />
-                <span className="font-bold text-xl text-gray-900">CredVault</span>
+                <span className="font-bold text-xl text-gray-900">
+                  CredVault
+                </span>
               </Link>
-              <Badge variant="secondary" className="ml-2">Issuer</Badge>
+              <Badge variant="secondary" className="ml-2">
+                Issuer
+              </Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <span className="text-sm text-gray-600">
+                Welcome, {user?.name}
+              </span>
               <span className="text-xs text-gray-500">{user?.institution}</span>
-              <Link to="/student" className="text-gray-700 hover:text-primary">Student</Link>
-              <Link to="/staff" className="text-gray-700 hover:text-primary">Staff</Link>
-              <Link to="/verify" className="text-gray-700 hover:text-primary">Verify</Link>
+              <Link to="/student" className="text-gray-700 hover:text-primary">
+                Student
+              </Link>
+              <Link to="/staff" className="text-gray-700 hover:text-primary">
+                Staff
+              </Link>
+              <Link to="/verify" className="text-gray-700 hover:text-primary">
+                Verify
+              </Link>
               <Badge className="bg-green-100 text-green-800">
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Authorized
@@ -274,9 +311,12 @@ export default function IssuerDashboard() {
               <Building className="h-6 w-6 text-purple-600" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{user?.institution} Dashboard</h1>
+              <h1 className="text-3xl font-bold text-gray-900">
+                {user?.institution} Dashboard
+              </h1>
               <p className="text-gray-600">
-                Mint and manage soulbound credential NFTs for your students and participants.
+                Mint and manage soulbound credential NFTs for your students and
+                participants.
               </p>
               <p className="text-gray-500 text-sm">{user?.email}</p>
             </div>
@@ -289,7 +329,9 @@ export default function IssuerDashboard() {
                 <div className="flex items-center space-x-2">
                   <Award className="h-8 w-8 text-primary" />
                   <div>
-                    <p className="text-2xl font-bold">{issuedCredentials.length}</p>
+                    <p className="text-2xl font-bold">
+                      {issuedCredentials.length}
+                    </p>
                     <p className="text-sm text-gray-600">Total Issued</p>
                   </div>
                 </div>
@@ -302,12 +344,14 @@ export default function IssuerDashboard() {
                   <Calendar className="h-8 w-8 text-blue-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {issuedCredentials.filter(c => {
-                        const issueDate = new Date(c.issuedDate);
-                        const monthAgo = new Date();
-                        monthAgo.setMonth(monthAgo.getMonth() - 1);
-                        return issueDate > monthAgo;
-                      }).length}
+                      {
+                        issuedCredentials.filter((c) => {
+                          const issueDate = new Date(c.issuedDate);
+                          const monthAgo = new Date();
+                          monthAgo.setMonth(monthAgo.getMonth() - 1);
+                          return issueDate > monthAgo;
+                        }).length
+                      }
                     </p>
                     <p className="text-sm text-gray-600">This Month</p>
                   </div>
@@ -321,7 +365,11 @@ export default function IssuerDashboard() {
                   <Users className="h-8 w-8 text-green-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {new Set(issuedCredentials.map(c => c.studentWalletAddress)).size}
+                      {
+                        new Set(
+                          issuedCredentials.map((c) => c.studentWalletAddress),
+                        ).size
+                      }
                     </p>
                     <p className="text-sm text-gray-600">Unique Students</p>
                   </div>
@@ -335,7 +383,10 @@ export default function IssuerDashboard() {
                   <CheckCircle className="h-8 w-8 text-purple-500" />
                   <div>
                     <p className="text-2xl font-bold">
-                      {issuedCredentials.filter(c => c.status === 'issued').length}
+                      {
+                        issuedCredentials.filter((c) => c.status === "issued")
+                          .length
+                      }
                     </p>
                     <p className="text-sm text-gray-600">Active</p>
                   </div>
@@ -355,19 +406,24 @@ export default function IssuerDashboard() {
                   <span>Mint New Credential</span>
                 </CardTitle>
                 <CardDescription>
-                  Create a new soulbound NFT credential for a student or participant.
+                  Create a new soulbound NFT credential for a student or
+                  participant.
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="recipientAddress">Recipient Wallet Address *</Label>
+                    <Label htmlFor="recipientAddress">
+                      Recipient Wallet Address *
+                    </Label>
                     <Input
                       id="recipientAddress"
                       placeholder="0x1234abcd... or username.apt"
                       value={formData.recipientAddress}
-                      onChange={(e) => handleInputChange("recipientAddress", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("recipientAddress", e.target.value)
+                      }
                     />
                   </div>
 
@@ -375,7 +431,9 @@ export default function IssuerDashboard() {
                     <Label htmlFor="credentialType">Credential Type *</Label>
                     <Select
                       value={formData.credentialType}
-                      onValueChange={(value) => handleInputChange("credentialType", value)}
+                      onValueChange={(value) =>
+                        handleInputChange("credentialType", value)
+                      }
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -383,8 +441,12 @@ export default function IssuerDashboard() {
                       <SelectContent>
                         <SelectItem value="certificate">Certificate</SelectItem>
                         <SelectItem value="achievement">Achievement</SelectItem>
-                        <SelectItem value="course_completion">Course Completion</SelectItem>
-                        <SelectItem value="participation">Event Participation</SelectItem>
+                        <SelectItem value="course_completion">
+                          Course Completion
+                        </SelectItem>
+                        <SelectItem value="participation">
+                          Event Participation
+                        </SelectItem>
                         <SelectItem value="award">Award/Recognition</SelectItem>
                         <SelectItem value="degree">Degree</SelectItem>
                         <SelectItem value="diploma">Diploma</SelectItem>
@@ -399,7 +461,9 @@ export default function IssuerDashboard() {
                     id="credentialTitle"
                     placeholder="e.g., Computer Science Degree, React Certification"
                     value={formData.credentialTitle}
-                    onChange={(e) => handleInputChange("credentialTitle", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("credentialTitle", e.target.value)
+                    }
                   />
                 </div>
 
@@ -409,7 +473,9 @@ export default function IssuerDashboard() {
                     id="description"
                     placeholder="Describe the achievement, skills demonstrated, or requirements met..."
                     value={formData.description}
-                    onChange={(e) => handleInputChange("description", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("description", e.target.value)
+                    }
                     rows={3}
                   />
                 </div>
@@ -421,7 +487,9 @@ export default function IssuerDashboard() {
                       id="eventLink"
                       placeholder="https://..."
                       value={formData.eventLink}
-                      onChange={(e) => handleInputChange("eventLink", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("eventLink", e.target.value)
+                      }
                     />
                   </div>
 
@@ -431,22 +499,29 @@ export default function IssuerDashboard() {
                       id="issueDate"
                       type="date"
                       value={formData.issueDate}
-                      onChange={(e) => handleInputChange("issueDate", e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("issueDate", e.target.value)
+                      }
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="additionalMetadata">Additional Metadata (JSON)</Label>
+                  <Label htmlFor="additionalMetadata">
+                    Additional Metadata (JSON)
+                  </Label>
                   <Textarea
                     id="additionalMetadata"
                     placeholder='{"grade": "A+", "hours": "40", "skills": ["React", "TypeScript"]}'
                     value={formData.additionalMetadata}
-                    onChange={(e) => handleInputChange("additionalMetadata", e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("additionalMetadata", e.target.value)
+                    }
                     rows={3}
                   />
                   <p className="text-sm text-gray-500">
-                    Optional: Add custom metadata as JSON (e.g., grades, duration, skills)
+                    Optional: Add custom metadata as JSON (e.g., grades,
+                    duration, skills)
                   </p>
                 </div>
 
@@ -456,7 +531,8 @@ export default function IssuerDashboard() {
                   <Alert className="flex-1 mr-4">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      Credentials are soulbound and cannot be transferred once minted.
+                      Credentials are soulbound and cannot be transferred once
+                      minted.
                     </AlertDescription>
                   </Alert>
 
@@ -492,9 +568,9 @@ export default function IssuerDashboard() {
                   <span>Issued Credentials</span>
                 </CardTitle>
                 <CardDescription>
-                  {issuedCredentials.length > 0 
-                    ? `${issuedCredentials.length} credentials issued` 
-                    : 'No credentials issued yet'}
+                  {issuedCredentials.length > 0
+                    ? `${issuedCredentials.length} credentials issued`
+                    : "No credentials issued yet"}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -502,36 +578,46 @@ export default function IssuerDashboard() {
                   <div className="text-center py-8">
                     <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600 text-sm">
-                      No credentials issued yet. Use the form to mint your first credential.
+                      No credentials issued yet. Use the form to mint your first
+                      credential.
                     </p>
                   </div>
                 ) : (
                   <div className="space-y-4 max-h-96 overflow-y-auto">
                     {issuedCredentials
-                      .sort((a, b) => new Date(b.issuedDate).getTime() - new Date(a.issuedDate).getTime())
+                      .sort(
+                        (a, b) =>
+                          new Date(b.issuedDate).getTime() -
+                          new Date(a.issuedDate).getTime(),
+                      )
                       .slice(0, 10)
                       .map((credential) => (
-                      <div
-                        key={credential.id}
-                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                      >
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">{credential.title}</p>
-                          <p className="text-xs text-gray-600 truncate">
-                            To: {credential.studentWalletAddress.slice(0, 6)}...{credential.studentWalletAddress.slice(-4)}
-                          </p>
-                          <p className="text-xs text-gray-500">
-                            {new Date(credential.issuedDate).toLocaleDateString()}
-                          </p>
+                        <div
+                          key={credential.id}
+                          className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
+                        >
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">
+                              {credential.title}
+                            </p>
+                            <p className="text-xs text-gray-600 truncate">
+                              To: {credential.studentWalletAddress.slice(0, 6)}
+                              ...{credential.studentWalletAddress.slice(-4)}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {new Date(
+                                credential.issuedDate,
+                              ).toLocaleDateString()}
+                            </p>
+                          </div>
+                          <div className="ml-2">
+                            <Badge className="bg-green-100 text-green-800">
+                              <CheckCircle className="h-3 w-3 mr-1" />
+                              {credential.status}
+                            </Badge>
+                          </div>
                         </div>
-                        <div className="ml-2">
-                          <Badge className="bg-green-100 text-green-800">
-                            <CheckCircle className="h-3 w-3 mr-1" />
-                            {credential.status}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
+                      ))}
                   </div>
                 )}
               </CardContent>
@@ -554,13 +640,21 @@ export default function IssuerDashboard() {
                   <Award className="h-4 w-4 mr-2" />
                   Create Template
                 </Button>
-                <Button variant="outline" className="w-full justify-start" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  asChild
+                >
                   <Link to="/verify">
                     <Eye className="h-4 w-4 mr-2" />
                     Verify Credentials
                   </Link>
                 </Button>
-                <Button variant="outline" className="w-full justify-start" asChild>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start"
+                  asChild
+                >
                   <Link to="/staff">
                     <Shield className="h-4 w-4 mr-2" />
                     Staff Dashboard
@@ -589,7 +683,8 @@ export default function IssuerDashboard() {
                 <div>
                   <p className="text-sm font-medium text-gray-900">Wallet</p>
                   <p className="text-sm text-gray-600 font-mono">
-                    {user?.walletAddress.slice(0, 6)}...{user?.walletAddress.slice(-4)}
+                    {user?.walletAddress.slice(0, 6)}...
+                    {user?.walletAddress.slice(-4)}
                   </p>
                 </div>
                 <div>
