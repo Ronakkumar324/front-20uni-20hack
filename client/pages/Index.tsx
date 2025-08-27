@@ -428,23 +428,28 @@ export default function Index() {
               <h4 className="font-semibold mb-4">Get Started</h4>
               <ul className="space-y-2 text-gray-600">
                 <li>
+                  <Link to="/signin" className="hover:text-primary">
+                    Sign In
+                  </Link>
+                </li>
+                <li>
                   <Link to="/register" className="hover:text-primary">
                     Register
                   </Link>
                 </li>
                 <li>
-                  <Link to="/register/student" className="hover:text-primary">
-                    Student Registration
+                  <Link to="/signin/student" className="hover:text-primary">
+                    Student Sign In
                   </Link>
                 </li>
                 <li>
-                  <Link to="/register/staff" className="hover:text-primary">
-                    Staff Registration
+                  <Link to="/signin/staff" className="hover:text-primary">
+                    Staff Sign In
                   </Link>
                 </li>
                 <li>
-                  <Link to="/register/issuer" className="hover:text-primary">
-                    Issuer Registration
+                  <Link to="/signin/issuer" className="hover:text-primary">
+                    Issuer Sign In
                   </Link>
                 </li>
               </ul>
