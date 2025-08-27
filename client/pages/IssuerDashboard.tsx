@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -21,6 +21,13 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { useAuth } from "@/lib/auth-context";
+import { 
+  saveIssuedCredential, 
+  getCredentialsByIssuer, 
+  isValidWallet, 
+  type IssuedCredential 
+} from "@/lib/auth";
 import { toast } from "sonner";
 import {
   Shield,
@@ -33,39 +40,17 @@ import {
   FileText,
   Users,
   Plus,
+  LogOut,
+  UserPlus,
+  Eye,
+  Hash,
 } from "lucide-react";
 
-// Mock recent issuances for demonstration
-const mockRecentIssuances = [
-  {
-    id: "1",
-    recipient: "0x1234...abcd",
-    credentialTitle: "JavaScript Fundamentals",
-    type: "Certificate",
-    issuedAt: "2024-01-20T10:30:00Z",
-    status: "confirmed",
-  },
-  {
-    id: "2",
-    recipient: "0x5678...efgh",
-    credentialTitle: "Hackathon Participation",
-    type: "Achievement",
-    issuedAt: "2024-01-19T15:45:00Z",
-    status: "confirmed",
-  },
-  {
-    id: "3",
-    recipient: "0x9abc...ijkl",
-    credentialTitle: "Data Science Bootcamp",
-    type: "Course Completion",
-    issuedAt: "2024-01-18T09:15:00Z",
-    status: "pending",
-  },
-];
-
 export default function IssuerDashboard() {
-  const [isAuthorized, setIsAuthorized] = useState(true); // Mock authorization
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
+  const [issuedCredentials, setIssuedCredentials] = useState<IssuedCredential[]>([]);
   const [formData, setFormData] = useState({
     recipientAddress: "",
     credentialTitle: "",
@@ -75,18 +60,83 @@ export default function IssuerDashboard() {
     issueDate: "",
     additionalMetadata: "",
   });
-  const [recentIssuances] = useState(mockRecentIssuances);
+
+  // Check if user is authenticated and is an issuer
+  useEffect(() => {
+    if (!isAuthenticated) {
+      return;
+    }
+    
+    if (user?.role !== 'issuer') {
+      toast.error("Access Denied", {
+        description: "This dashboard is only for issuers. Please register as an issuer."
+      });
+      navigate('/register');
+      return;
+    }
+
+    // Load issued credentials
+    loadIssuedCredentials();
+  }, [user, isAuthenticated, navigate]);
+
+  const loadIssuedCredentials = () => {
+    if (user?.walletAddress) {
+      const credentials = getCredentialsByIssuer(user.walletAddress);
+      setIssuedCredentials(credentials);
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleMintCredential = async () => {
+    if (!isFormValid()) {
+      toast.error("Invalid Form", {
+        description: "Please fill in all required fields."
+      });
+      return;
+    }
+
+    if (!isValidWallet(formData.recipientAddress)) {
+      toast.error("Invalid Wallet Address", {
+        description: "Please enter a valid Aptos wallet address."
+      });
+      return;
+    }
+
     setIsLoading(true);
 
-    // Mock minting process - in real app would call Aptos smart contract
     try {
-      await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulate transaction
+      // Parse additional metadata if provided
+      let parsedMetadata = {};
+      if (formData.additionalMetadata.trim()) {
+        try {
+          parsedMetadata = JSON.parse(formData.additionalMetadata);
+        } catch (error) {
+          toast.error("Invalid JSON", {
+            description: "Additional metadata must be valid JSON format."
+          });
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // Simulate blockchain transaction delay
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Save the credential
+      const newCredential = saveIssuedCredential({
+        title: formData.credentialTitle,
+        description: formData.description,
+        studentWalletAddress: formData.recipientAddress.trim(),
+        issuerWalletAddress: user!.walletAddress,
+        issuerName: user!.name,
+        issuerInstitution: user!.institution || 'Unknown Institution',
+      });
+
+      // Reload credentials
+      loadIssuedCredentials();
 
       // Reset form
       setFormData({
@@ -99,13 +149,13 @@ export default function IssuerDashboard() {
         additionalMetadata: "",
       });
 
-      toast.success("Credential minted successfully!", {
-        description:
-          "The soulbound NFT has been created and sent to the recipient's wallet.",
+      toast.success("Credential Minted Successfully!", {
+        description: `The credential "${newCredential.title}" has been issued to ${formData.recipientAddress.slice(0, 6)}...${formData.recipientAddress.slice(-4)}.`,
       });
     } catch (error) {
-      toast.error("Failed to mint credential", {
-        description: "Please check the form data and try again.",
+      console.error("Failed to mint credential:", error);
+      toast.error("Failed to Mint Credential", {
+        description: "An error occurred while issuing the credential. Please try again.",
       });
     } finally {
       setIsLoading(false);
@@ -114,41 +164,71 @@ export default function IssuerDashboard() {
 
   const isFormValid = () => {
     return (
-      formData.recipientAddress &&
-      formData.credentialTitle &&
+      formData.recipientAddress.trim() &&
+      formData.credentialTitle.trim() &&
       formData.credentialType &&
-      formData.description
+      formData.description.trim()
     );
   };
 
-  if (!isAuthorized) {
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    toast.success("Logged Out", {
+      description: "You have been logged out successfully."
+    });
+  };
+
+  // If not authenticated, show registration prompt
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-cyan-50">
-        <nav className="border-b bg-white/80 backdrop-blur-sm">
+        <nav className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <Link to="/" className="flex items-center space-x-2">
-                <Shield className="h-8 w-8 text-primary" />
-                <span className="font-bold text-xl text-gray-900">
-                  CredVault
-                </span>
-              </Link>
+              <div className="flex items-center space-x-2">
+                <Link to="/" className="flex items-center space-x-2">
+                  <Shield className="h-8 w-8 text-primary" />
+                  <span className="font-bold text-xl text-gray-900">CredVault</span>
+                </Link>
+                <Badge variant="secondary" className="ml-2">Issuer</Badge>
+              </div>
+              <div className="flex items-center space-x-4">
+                <Link to="/verify" className="text-gray-700 hover:text-primary">Verify</Link>
+                <Link to="/student" className="text-gray-700 hover:text-primary">Student</Link>
+                <Link to="/staff" className="text-gray-700 hover:text-primary">Staff</Link>
+                <Link to="/register" className="text-gray-700 hover:text-primary">Register</Link>
+              </div>
             </div>
           </div>
         </nav>
 
-        <div className="max-w-2xl mx-auto px-4 py-16 text-center">
-          <AlertCircle className="h-16 w-16 text-red-500 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">
-            Unauthorized Access
-          </h2>
-          <p className="text-gray-600 mb-8">
-            Only authorized institutions and verified issuers can access this
-            dashboard. Please contact the administrator to request access.
-          </p>
-          <Button asChild>
-            <Link to="/">Return Home</Link>
-          </Button>
+        <div className="text-center py-16">
+          <div className="max-w-md mx-auto">
+            <UserPlus className="h-16 w-16 text-gray-400 mx-auto mb-6" />
+            <h2 className="text-2xl font-bold text-gray-900 mb-4">Issuer Registration Required</h2>
+            <p className="text-gray-600 mb-8">
+              Please register as an issuer to access the credential minting dashboard and manage your institution's credentials.
+            </p>
+            <div className="space-y-4">
+              <Button 
+                onClick={() => navigate('/register/issuer')} 
+                size="lg" 
+                className="w-full bg-primary hover:bg-primary/90"
+              >
+                <UserPlus className="h-5 w-5 mr-2" />
+                Register as Issuer
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={() => navigate('/register')} 
+                size="lg" 
+                className="w-full"
+              >
+                View All Registration Options
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -163,25 +243,24 @@ export default function IssuerDashboard() {
             <div className="flex items-center space-x-2">
               <Link to="/" className="flex items-center space-x-2">
                 <Shield className="h-8 w-8 text-primary" />
-                <span className="font-bold text-xl text-gray-900">
-                  CredVault
-                </span>
+                <span className="font-bold text-xl text-gray-900">CredVault</span>
               </Link>
-              <Badge variant="secondary" className="ml-2">
-                Issuer
-              </Badge>
+              <Badge variant="secondary" className="ml-2">Issuer</Badge>
             </div>
             <div className="flex items-center space-x-4">
-              <Link to="/student" className="text-gray-700 hover:text-primary">
-                Student
-              </Link>
-              <Link to="/verify" className="text-gray-700 hover:text-primary">
-                Verify
-              </Link>
+              <span className="text-sm text-gray-600">Welcome, {user?.name}</span>
+              <span className="text-xs text-gray-500">{user?.institution}</span>
+              <Link to="/student" className="text-gray-700 hover:text-primary">Student</Link>
+              <Link to="/staff" className="text-gray-700 hover:text-primary">Staff</Link>
+              <Link to="/verify" className="text-gray-700 hover:text-primary">Verify</Link>
               <Badge className="bg-green-100 text-green-800">
                 <CheckCircle className="h-3 w-3 mr-1" />
                 Authorized
               </Badge>
+              <Button variant="outline" size="sm" onClick={handleLogout}>
+                <LogOut className="h-4 w-4 mr-2" />
+                Logout
+              </Button>
             </div>
           </div>
         </div>
@@ -190,13 +269,80 @@ export default function IssuerDashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            Issuer Dashboard
-          </h1>
-          <p className="text-gray-600">
-            Mint and manage soulbound credential NFTs for your students and
-            participants.
-          </p>
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-cyan-100 rounded-full flex items-center justify-center">
+              <Building className="h-6 w-6 text-purple-600" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">{user?.institution} Dashboard</h1>
+              <p className="text-gray-600">
+                Mint and manage soulbound credential NFTs for your students and participants.
+              </p>
+              <p className="text-gray-500 text-sm">{user?.email}</p>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Award className="h-8 w-8 text-primary" />
+                  <div>
+                    <p className="text-2xl font-bold">{issuedCredentials.length}</p>
+                    <p className="text-sm text-gray-600">Total Issued</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Calendar className="h-8 w-8 text-blue-500" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {issuedCredentials.filter(c => {
+                        const issueDate = new Date(c.issuedDate);
+                        const monthAgo = new Date();
+                        monthAgo.setMonth(monthAgo.getMonth() - 1);
+                        return issueDate > monthAgo;
+                      }).length}
+                    </p>
+                    <p className="text-sm text-gray-600">This Month</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <Users className="h-8 w-8 text-green-500" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {new Set(issuedCredentials.map(c => c.studentWalletAddress)).size}
+                    </p>
+                    <p className="text-sm text-gray-600">Unique Students</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardContent className="p-4">
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="h-8 w-8 text-purple-500" />
+                  <div>
+                    <p className="text-2xl font-bold">
+                      {issuedCredentials.filter(c => c.status === 'issued').length}
+                    </p>
+                    <p className="text-sm text-gray-600">Active</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -209,24 +355,19 @@ export default function IssuerDashboard() {
                   <span>Mint New Credential</span>
                 </CardTitle>
                 <CardDescription>
-                  Create a new soulbound NFT credential for a student or
-                  participant.
+                  Create a new soulbound NFT credential for a student or participant.
                 </CardDescription>
               </CardHeader>
 
               <CardContent className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="recipientAddress">
-                      Recipient Wallet Address *
-                    </Label>
+                    <Label htmlFor="recipientAddress">Recipient Wallet Address *</Label>
                     <Input
                       id="recipientAddress"
-                      placeholder="0x1234abcd..."
+                      placeholder="0x1234abcd... or username.apt"
                       value={formData.recipientAddress}
-                      onChange={(e) =>
-                        handleInputChange("recipientAddress", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("recipientAddress", e.target.value)}
                     />
                   </div>
 
@@ -234,9 +375,7 @@ export default function IssuerDashboard() {
                     <Label htmlFor="credentialType">Credential Type *</Label>
                     <Select
                       value={formData.credentialType}
-                      onValueChange={(value) =>
-                        handleInputChange("credentialType", value)
-                      }
+                      onValueChange={(value) => handleInputChange("credentialType", value)}
                     >
                       <SelectTrigger>
                         <SelectValue placeholder="Select type" />
@@ -244,13 +383,11 @@ export default function IssuerDashboard() {
                       <SelectContent>
                         <SelectItem value="certificate">Certificate</SelectItem>
                         <SelectItem value="achievement">Achievement</SelectItem>
-                        <SelectItem value="course_completion">
-                          Course Completion
-                        </SelectItem>
-                        <SelectItem value="participation">
-                          Event Participation
-                        </SelectItem>
+                        <SelectItem value="course_completion">Course Completion</SelectItem>
+                        <SelectItem value="participation">Event Participation</SelectItem>
                         <SelectItem value="award">Award/Recognition</SelectItem>
+                        <SelectItem value="degree">Degree</SelectItem>
+                        <SelectItem value="diploma">Diploma</SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -260,11 +397,9 @@ export default function IssuerDashboard() {
                   <Label htmlFor="credentialTitle">Credential Title *</Label>
                   <Input
                     id="credentialTitle"
-                    placeholder="e.g., React Developer Certification"
+                    placeholder="e.g., Computer Science Degree, React Certification"
                     value={formData.credentialTitle}
-                    onChange={(e) =>
-                      handleInputChange("credentialTitle", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("credentialTitle", e.target.value)}
                   />
                 </div>
 
@@ -274,9 +409,7 @@ export default function IssuerDashboard() {
                     id="description"
                     placeholder="Describe the achievement, skills demonstrated, or requirements met..."
                     value={formData.description}
-                    onChange={(e) =>
-                      handleInputChange("description", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("description", e.target.value)}
                     rows={3}
                   />
                 </div>
@@ -288,9 +421,7 @@ export default function IssuerDashboard() {
                       id="eventLink"
                       placeholder="https://..."
                       value={formData.eventLink}
-                      onChange={(e) =>
-                        handleInputChange("eventLink", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("eventLink", e.target.value)}
                     />
                   </div>
 
@@ -300,29 +431,22 @@ export default function IssuerDashboard() {
                       id="issueDate"
                       type="date"
                       value={formData.issueDate}
-                      onChange={(e) =>
-                        handleInputChange("issueDate", e.target.value)
-                      }
+                      onChange={(e) => handleInputChange("issueDate", e.target.value)}
                     />
                   </div>
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="additionalMetadata">
-                    Additional Metadata (JSON)
-                  </Label>
+                  <Label htmlFor="additionalMetadata">Additional Metadata (JSON)</Label>
                   <Textarea
                     id="additionalMetadata"
                     placeholder='{"grade": "A+", "hours": "40", "skills": ["React", "TypeScript"]}'
                     value={formData.additionalMetadata}
-                    onChange={(e) =>
-                      handleInputChange("additionalMetadata", e.target.value)
-                    }
+                    onChange={(e) => handleInputChange("additionalMetadata", e.target.value)}
                     rows={3}
                   />
                   <p className="text-sm text-gray-500">
-                    Optional: Add custom metadata as JSON (e.g., grades,
-                    duration, skills)
+                    Optional: Add custom metadata as JSON (e.g., grades, duration, skills)
                   </p>
                 </div>
 
@@ -332,8 +456,7 @@ export default function IssuerDashboard() {
                   <Alert className="flex-1 mr-4">
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
-                      Credentials are soulbound and cannot be transferred once
-                      minted.
+                      Credentials are soulbound and cannot be transferred once minted.
                     </AlertDescription>
                   </Alert>
 
@@ -359,75 +482,58 @@ export default function IssuerDashboard() {
             </Card>
           </div>
 
-          {/* Sidebar - Stats & Recent Activity */}
+          {/* Sidebar - Issued Credentials */}
           <div className="space-y-6">
-            {/* Stats */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center space-x-2">
-                  <Award className="h-5 w-5" />
-                  <span>Issuer Stats</span>
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Total Issued</span>
-                  <span className="font-semibold">127</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">This Month</span>
-                  <span className="font-semibold">23</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Active Students</span>
-                  <span className="font-semibold">89</span>
-                </div>
-                <Separator />
-                <div className="flex justify-between items-center">
-                  <span className="text-gray-600">Success Rate</span>
-                  <Badge className="bg-green-100 text-green-800">99.2%</Badge>
-                </div>
-              </CardContent>
-            </Card>
-
             {/* Recent Activity */}
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center space-x-2">
                   <FileText className="h-5 w-5" />
-                  <span>Recent Issuances</span>
+                  <span>Issued Credentials</span>
                 </CardTitle>
+                <CardDescription>
+                  {issuedCredentials.length > 0 
+                    ? `${issuedCredentials.length} credentials issued` 
+                    : 'No credentials issued yet'}
+                </CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="space-y-4">
-                  {recentIssuances.map((issuance) => (
-                    <div
-                      key={issuance.id}
-                      className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
-                    >
-                      <div>
-                        <p className="font-medium text-sm">
-                          {issuance.credentialTitle}
-                        </p>
-                        <p className="text-xs text-gray-600">
-                          {issuance.recipient}
-                        </p>
-                        <p className="text-xs text-gray-500">
-                          {new Date(issuance.issuedAt).toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Badge
-                        className={
-                          issuance.status === "confirmed"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-yellow-100 text-yellow-800"
-                        }
+                {issuedCredentials.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Award className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+                    <p className="text-gray-600 text-sm">
+                      No credentials issued yet. Use the form to mint your first credential.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                    {issuedCredentials
+                      .sort((a, b) => new Date(b.issuedDate).getTime() - new Date(a.issuedDate).getTime())
+                      .slice(0, 10)
+                      .map((credential) => (
+                      <div
+                        key={credential.id}
+                        className="flex items-center justify-between p-3 bg-gray-50 rounded-lg"
                       >
-                        {issuance.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">{credential.title}</p>
+                          <p className="text-xs text-gray-600 truncate">
+                            To: {credential.studentWalletAddress.slice(0, 6)}...{credential.studentWalletAddress.slice(-4)}
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            {new Date(credential.issuedDate).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <div className="ml-2">
+                          <Badge className="bg-green-100 text-green-800">
+                            <CheckCircle className="h-3 w-3 mr-1" />
+                            {credential.status}
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </CardContent>
             </Card>
 
@@ -442,22 +548,54 @@ export default function IssuerDashboard() {
               <CardContent className="space-y-3">
                 <Button variant="outline" className="w-full justify-start">
                   <FileText className="h-4 w-4 mr-2" />
-                  Bulk Import Recipients
+                  Export Credentials
                 </Button>
                 <Button variant="outline" className="w-full justify-start">
                   <Award className="h-4 w-4 mr-2" />
                   Create Template
                 </Button>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start"
-                  asChild
-                >
+                <Button variant="outline" className="w-full justify-start" asChild>
                   <Link to="/verify">
-                    <CheckCircle className="h-4 w-4 mr-2" />
+                    <Eye className="h-4 w-4 mr-2" />
                     Verify Credentials
                   </Link>
                 </Button>
+                <Button variant="outline" className="w-full justify-start" asChild>
+                  <Link to="/staff">
+                    <Shield className="h-4 w-4 mr-2" />
+                    Staff Dashboard
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+
+            {/* Institution Info */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Building className="h-5 w-5" />
+                  <span>Institution Details</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3">
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Name</p>
+                  <p className="text-sm text-gray-600">{user?.institution}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Issuer</p>
+                  <p className="text-sm text-gray-600">{user?.name}</p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Wallet</p>
+                  <p className="text-sm text-gray-600 font-mono">
+                    {user?.walletAddress.slice(0, 6)}...{user?.walletAddress.slice(-4)}
+                  </p>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-gray-900">Contact</p>
+                  <p className="text-sm text-gray-600">{user?.email}</p>
+                </div>
               </CardContent>
             </Card>
           </div>
