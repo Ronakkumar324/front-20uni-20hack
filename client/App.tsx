@@ -14,6 +14,10 @@ import Registration from "./pages/Registration";
 import StudentRegistration from "./pages/StudentRegistration";
 import StaffRegistration from "./pages/StaffRegistration";
 import IssuerRegistration from "./pages/IssuerRegistration";
+import SignIn from "./pages/SignIn";
+import StudentSignIn from "./pages/StudentSignIn";
+import StaffSignIn from "./pages/StaffSignIn";
+import IssuerSignIn from "./pages/IssuerSignIn";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
