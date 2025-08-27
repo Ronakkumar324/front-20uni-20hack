@@ -7,6 +7,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { AuthProvider } from "@/lib/auth-context";
 import Index from "./pages/Index";
 import StudentDashboard from "./pages/StudentDashboard";
+import StaffDashboard from "./pages/StaffDashboard";
 import IssuerDashboard from "./pages/IssuerDashboard";
 import VerificationPage from "./pages/VerificationPage";
 import Registration from "./pages/Registration";
