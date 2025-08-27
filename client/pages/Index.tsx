@@ -8,9 +8,32 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Shield, Award, Users, QrCode, Lock, CheckCircle } from "lucide-react";
+import { useAuth } from "@/lib/auth-context";
+import { Shield, Award, Users, QrCode, Lock, CheckCircle, UserPlus, LogOut } from "lucide-react";
 
 export default function Index() {
+  const { user, isAuthenticated, logout } = useAuth();
+
+  const getRoleDashboardPath = () => {
+    if (!user) return '/register';
+    switch (user.role) {
+      case 'student': return '/student';
+      case 'staff': return '/staff';
+      case 'issuer': return '/issuer';
+      default: return '/register';
+    }
+  };
+
+  const getRoleDisplayName = () => {
+    if (!user) return 'Guest';
+    switch (user.role) {
+      case 'student': return 'Student';
+      case 'staff': return 'Staff';
+      case 'issuer': return 'Issuer';
+      default: return 'User';
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-purple-50 to-cyan-50">
       {/* Navigation */}
@@ -28,15 +51,43 @@ export default function Index() {
               <Link to="/student" className="text-gray-700 hover:text-primary">
                 Student
               </Link>
+              <Link to="/staff" className="text-gray-700 hover:text-primary">
+                Staff
+              </Link>
               <Link to="/issuer" className="text-gray-700 hover:text-primary">
                 Issuer
               </Link>
               <Link to="/verify" className="text-gray-700 hover:text-primary">
                 Verify
               </Link>
-              <Button className="bg-primary hover:bg-primary/90">
-                Connect Wallet
-              </Button>
+              
+              {isAuthenticated ? (
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    <Badge variant="outline">{getRoleDisplayName()}</Badge>
+                    <span className="text-sm text-gray-600">{user?.name}</span>
+                  </div>
+                  <Button variant="outline" size="sm" asChild>
+                    <Link to={getRoleDashboardPath()}>Dashboard</Link>
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={logout}>
+                    <LogOut className="h-4 w-4 mr-1" />
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Button variant="outline" asChild>
+                    <Link to="/register">
+                      <UserPlus className="h-4 w-4 mr-2" />
+                      Register
+                    </Link>
+                  </Button>
+                  <Button className="bg-primary hover:bg-primary/90" asChild>
+                    <Link to="/register">Get Started</Link>
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -58,21 +109,115 @@ export default function Index() {
               permanently verifiable academic credentials. Certificates, course
               completions, and achievements that follow you everywhere.
             </p>
+            
+            {/* Dynamic CTA based on auth status */}
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button
-                size="lg"
-                className="bg-primary hover:bg-primary/90"
-                asChild
-              >
-                <Link to="/student">View My Credentials</Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link to="/verify">Verify Credentials</Link>
-              </Button>
+              {isAuthenticated ? (
+                <>
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90"
+                    asChild
+                  >
+                    <Link to={getRoleDashboardPath()}>
+                      Go to {getRoleDisplayName()} Dashboard
+                    </Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link to="/verify">Verify Credentials</Link>
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Button
+                    size="lg"
+                    className="bg-primary hover:bg-primary/90"
+                    asChild
+                  >
+                    <Link to="/register/student">Get Started as Student</Link>
+                  </Button>
+                  <Button size="lg" variant="outline" asChild>
+                    <Link to="/verify">Verify Credentials</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>
       </section>
+
+      {/* Role Selection Section (for non-authenticated users) */}
+      {!isAuthenticated && (
+        <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
+          <div className="max-w-7xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                Choose Your Role
+              </h2>
+              <p className="text-gray-600 max-w-2xl mx-auto">
+                Different roles have different capabilities in the CredVault ecosystem.
+                Select the one that best describes you.
+              </p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8">
+              <Card className="border-2 hover:border-primary/20 transition-colors group cursor-pointer">
+                <Link to="/register/student">
+                  <CardHeader className="text-center">
+                    <Users className="h-12 w-12 text-blue-500 mb-4 mx-auto group-hover:scale-110 transition-transform" />
+                    <CardTitle>Student</CardTitle>
+                    <CardDescription>
+                      Request and manage your academic credentials. View your achievements
+                      and share them with employers or institutions.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button className="w-full" variant="outline">
+                      Register as Student
+                    </Button>
+                  </CardContent>
+                </Link>
+              </Card>
+
+              <Card className="border-2 hover:border-primary/20 transition-colors group cursor-pointer">
+                <Link to="/register/staff">
+                  <CardHeader className="text-center">
+                    <Shield className="h-12 w-12 text-green-500 mb-4 mx-auto group-hover:scale-110 transition-transform" />
+                    <CardTitle>Staff (Verifier)</CardTitle>
+                    <CardDescription>
+                      Verify student credentials on behalf of your organization.
+                      Check and validate academic achievements.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button className="w-full" variant="outline">
+                      Register as Staff
+                    </Button>
+                  </CardContent>
+                </Link>
+              </Card>
+
+              <Card className="border-2 hover:border-primary/20 transition-colors group cursor-pointer">
+                <Link to="/register/issuer">
+                  <CardHeader className="text-center">
+                    <Award className="h-12 w-12 text-purple-500 mb-4 mx-auto group-hover:scale-110 transition-transform" />
+                    <CardTitle>Issuer</CardTitle>
+                    <CardDescription>
+                      Issue verifiable credentials for your institution.
+                      Mint and manage academic NFTs for students.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <Button className="w-full" variant="outline">
+                      Register as Issuer
+                    </Button>
+                  </CardContent>
+                </Link>
+              </Card>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Features Grid */}
       <section className="py-16 px-4 sm:px-6 lg:px-8">
@@ -177,26 +322,53 @@ export default function Index() {
         <div className="max-w-4xl mx-auto text-center">
           <Card className="border-2 border-primary/20 bg-gradient-to-r from-primary/5 to-credential-500/5">
             <CardContent className="pt-8">
-              <h2 className="text-3xl font-bold text-gray-900 mb-4">
-                Ready to Secure Your Credentials?
-              </h2>
-              <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
-                Join thousands of students and institutions using CredVault to
-                issue, store, and verify academic achievements on the
-                blockchain.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  size="lg"
-                  className="bg-primary hover:bg-primary/90"
-                  asChild
-                >
-                  <Link to="/student">Get Started as Student</Link>
-                </Button>
-                <Button size="lg" variant="outline" asChild>
-                  <Link to="/issuer">Register as Issuer</Link>
-                </Button>
-              </div>
+              {isAuthenticated ? (
+                <>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                    Welcome back, {user?.name}!
+                  </h2>
+                  <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Continue managing your credentials and exploring the CredVault ecosystem.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90"
+                      asChild
+                    >
+                      <Link to={getRoleDashboardPath()}>
+                        Go to {getRoleDisplayName()} Dashboard
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link to="/verify">Verify Credentials</Link>
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-3xl font-bold text-gray-900 mb-4">
+                    Ready to Secure Your Credentials?
+                  </h2>
+                  <p className="text-gray-600 mb-8 max-w-2xl mx-auto">
+                    Join thousands of students and institutions using CredVault to
+                    issue, store, and verify academic achievements on the
+                    blockchain.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                    <Button
+                      size="lg"
+                      className="bg-primary hover:bg-primary/90"
+                      asChild
+                    >
+                      <Link to="/register/student">Get Started as Student</Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link to="/register/issuer">Register as Issuer</Link>
+                    </Button>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -232,6 +404,11 @@ export default function Index() {
                   </Link>
                 </li>
                 <li>
+                  <Link to="/staff" className="hover:text-primary">
+                    Staff Dashboard
+                  </Link>
+                </li>
+                <li>
                   <Link to="/issuer" className="hover:text-primary">
                     Issuer Portal
                   </Link>
@@ -245,22 +422,27 @@ export default function Index() {
             </div>
 
             <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
+              <h4 className="font-semibold mb-4">Get Started</h4>
               <ul className="space-y-2 text-gray-600">
                 <li>
-                  <a href="#" className="hover:text-primary">
-                    Documentation
-                  </a>
+                  <Link to="/register" className="hover:text-primary">
+                    Register
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary">
-                    Smart Contract
-                  </a>
+                  <Link to="/register/student" className="hover:text-primary">
+                    Student Registration
+                  </Link>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary">
-                    GitHub
-                  </a>
+                  <Link to="/register/staff" className="hover:text-primary">
+                    Staff Registration
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/register/issuer" className="hover:text-primary">
+                    Issuer Registration
+                  </Link>
                 </li>
               </ul>
             </div>
