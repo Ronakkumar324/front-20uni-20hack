@@ -72,20 +72,20 @@ export default function StaffRegistration() {
     try {
       // Register the staff member
       const profile = registerStaff(formData);
-      
+
       toast.success("Registration Successful!", {
-        description: `Welcome, ${profile.name}! Redirecting to your dashboard...`
+        description: `Account created for ${profile.name}! Please sign in to access your dashboard.`
       });
 
-      // Redirect to staff dashboard after a short delay
+      // Redirect to sign-in page after a short delay
       setTimeout(() => {
-        navigate('/staff');
+        navigate('/signin/staff');
       }, 1500);
 
-    } catch (error) {
+    } catch (error: any) {
       console.error('Registration failed:', error);
       toast.error("Registration Failed", {
-        description: "Please try again or contact support if the issue persists."
+        description: error.message || "Please try again or contact support if the issue persists."
       });
     } finally {
       setIsSubmitting(false);
