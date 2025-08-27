@@ -89,6 +89,142 @@ export function logout(): void {
 }
 
 /**
+ * Get all registered users
+ */
+function getRegisteredUsers(): StoredUser[] {
+  try {
+    const stored = localStorage.getItem(REGISTERED_USERS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error('Error reading registered users:', error);
+    return [];
+  }
+}
+
+/**
+ * Save user to registered users list
+ */
+function saveToRegisteredUsers(user: StoredUser): void {
+  const users = getRegisteredUsers();
+
+  // Remove existing user with same email (update scenario)
+  const filteredUsers = users.filter(u => u.email !== user.email);
+  filteredUsers.push(user);
+
+  localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(filteredUsers));
+}
+
+/**
+ * Find user by email
+ */
+function findUserByEmail(email: string): StoredUser | null {
+  const users = getRegisteredUsers();
+  return users.find(user => user.email.toLowerCase() === email.toLowerCase()) || null;
+}
+
+/**
+ * Find user by email and wallet address
+ */
+function findUserByEmailAndWallet(email: string, walletAddress: string): StoredUser | null {
+  const users = getRegisteredUsers();
+  return users.find(user =>
+    user.email.toLowerCase() === email.toLowerCase() &&
+    user.walletAddress === walletAddress
+  ) || null;
+}
+
+/**
+ * Sign in a student (requires email and wallet address)
+ */
+export function signInStudent(data: StudentSignIn): UserProfile | null {
+  if (!isValidEmail(data.email)) {
+    throw new Error("Invalid email format");
+  }
+
+  if (!isValidWallet(data.walletAddress)) {
+    throw new Error("Invalid wallet address format");
+  }
+
+  const user = findUserByEmailAndWallet(data.email, data.walletAddress);
+
+  if (!user || user.role !== 'student') {
+    return null;
+  }
+
+  const profile: UserProfile = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    walletAddress: user.walletAddress,
+    role: user.role,
+    organization: user.organization,
+    institution: user.institution,
+    createdAt: user.createdAt,
+  };
+
+  saveUserProfile(profile);
+  return profile;
+}
+
+/**
+ * Sign in a staff member (requires only email)
+ */
+export function signInStaff(data: StaffSignIn): UserProfile | null {
+  if (!isValidEmail(data.email)) {
+    throw new Error("Invalid email format");
+  }
+
+  const user = findUserByEmail(data.email);
+
+  if (!user || user.role !== 'staff') {
+    return null;
+  }
+
+  const profile: UserProfile = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    walletAddress: user.walletAddress,
+    role: user.role,
+    organization: user.organization,
+    institution: user.institution,
+    createdAt: user.createdAt,
+  };
+
+  saveUserProfile(profile);
+  return profile;
+}
+
+/**
+ * Sign in an issuer (requires only email)
+ */
+export function signInIssuer(data: IssuerSignIn): UserProfile | null {
+  if (!isValidEmail(data.email)) {
+    throw new Error("Invalid email format");
+  }
+
+  const user = findUserByEmail(data.email);
+
+  if (!user || user.role !== 'issuer') {
+    return null;
+  }
+
+  const profile: UserProfile = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    walletAddress: user.walletAddress,
+    role: user.role,
+    organization: user.organization,
+    institution: user.institution,
+    createdAt: user.createdAt,
+  };
+
+  saveUserProfile(profile);
+  return profile;
+}
+
+/**
  * Register a new student
  */
 export function registerStudent(data: StudentRegistration): UserProfile {
