@@ -33,6 +33,30 @@ export interface IssuerRegistration {
   institution: string;
 }
 
+export interface StudentSignIn {
+  email: string;
+  walletAddress: string;
+}
+
+export interface StaffSignIn {
+  email: string;
+}
+
+export interface IssuerSignIn {
+  email: string;
+}
+
+export interface StoredUser {
+  id: string;
+  name: string;
+  email: string;
+  walletAddress: string;
+  role: 'student' | 'staff' | 'issuer';
+  organization?: string;
+  institution?: string;
+  createdAt: string;
+}
+
 const USER_PROFILE_KEY = 'credvault_user_profile';
 const ISSUED_CREDENTIALS_KEY = 'credvault_issued_credentials';
 const REGISTERED_USERS_KEY = 'credvault_registered_users';
