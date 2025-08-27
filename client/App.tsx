@@ -42,8 +42,8 @@ export default function App() {
               <Route path="/register/staff" element={<StaffRegistration />} />
               <Route path="/register/issuer" element={<IssuerRegistration />} />
 
-              {/* Staff dashboard placeholder - will create this later */}
-              <Route path="/staff" element={<div className="min-h-screen flex items-center justify-center"><p>Staff Dashboard - Coming Soon!</p></div>} />
+              {/* Staff Dashboard */}
+              <Route path="/staff" element={<StaffDashboard />} />
 
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
