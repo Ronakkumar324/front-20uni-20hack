@@ -245,8 +245,8 @@ export default function IssuerRegistration() {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <Link to="/issuer" className="text-primary hover:underline">
-              Go to Issuer Dashboard
+            <Link to="/signin/issuer" className="text-primary hover:underline">
+              Sign In to Issuer Dashboard
             </Link>
           </p>
         </div>
