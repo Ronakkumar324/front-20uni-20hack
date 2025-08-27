@@ -4,10 +4,15 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import { AuthProvider } from "@/lib/auth-context";
 import Index from "./pages/Index";
 import StudentDashboard from "./pages/StudentDashboard";
 import IssuerDashboard from "./pages/IssuerDashboard";
 import VerificationPage from "./pages/VerificationPage";
+import Registration from "./pages/Registration";
+import StudentRegistration from "./pages/StudentRegistration";
+import StaffRegistration from "./pages/StaffRegistration";
+import IssuerRegistration from "./pages/IssuerRegistration";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient({
