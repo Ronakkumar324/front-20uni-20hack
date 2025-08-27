@@ -216,8 +216,8 @@ export default function StudentRegistration() {
         <div className="text-center mt-6">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <Link to="/student" className="text-primary hover:underline">
-              Go to Student Dashboard
+            <Link to="/signin/student" className="text-primary hover:underline">
+              Sign In to Student Dashboard
             </Link>
           </p>
         </div>
