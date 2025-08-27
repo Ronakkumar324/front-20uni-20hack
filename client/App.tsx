@@ -46,6 +46,12 @@ export default function App() {
               <Route path="/register/staff" element={<StaffRegistration />} />
               <Route path="/register/issuer" element={<IssuerRegistration />} />
 
+              {/* Sign In Routes */}
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signin/student" element={<StudentSignIn />} />
+              <Route path="/signin/staff" element={<StaffSignIn />} />
+              <Route path="/signin/issuer" element={<IssuerSignIn />} />
+
               {/* Staff Dashboard */}
               <Route path="/staff" element={<StaffDashboard />} />
 
