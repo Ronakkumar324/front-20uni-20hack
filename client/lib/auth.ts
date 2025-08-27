@@ -262,6 +262,12 @@ export function registerStudent(data: StudentRegistration): UserProfile {
  * Register a new staff member
  */
 export function registerStaff(data: StaffRegistration): UserProfile {
+  // Check if user already exists
+  const existingUser = findUserByEmail(data.email);
+  if (existingUser) {
+    throw new Error("User with this email already exists");
+  }
+
   const profile: UserProfile = {
     id: generateUserId(),
     name: data.name,
@@ -272,7 +278,19 @@ export function registerStaff(data: StaffRegistration): UserProfile {
     createdAt: new Date().toISOString(),
   };
 
-  saveUserProfile(profile);
+  // Save to registered users list for future sign-ins
+  const storedUser: StoredUser = {
+    id: profile.id,
+    name: profile.name,
+    email: profile.email,
+    walletAddress: profile.walletAddress,
+    role: profile.role,
+    organization: profile.organization,
+    createdAt: profile.createdAt,
+  };
+  saveToRegisteredUsers(storedUser);
+
+  // Don't automatically login - user should sign in separately
   return profile;
 }
 
