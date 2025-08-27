@@ -35,6 +35,7 @@ export interface IssuerRegistration {
 
 const USER_PROFILE_KEY = 'credvault_user_profile';
 const ISSUED_CREDENTIALS_KEY = 'credvault_issued_credentials';
+const REGISTERED_USERS_KEY = 'credvault_registered_users';
 
 /**
  * Save user profile to localStorage
