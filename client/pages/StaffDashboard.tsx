@@ -274,7 +274,7 @@ export default function StaffDashboard() {
             </Avatar>
             <div>
               <h1 className="text-3xl font-bold text-gray-900">
-                Staff Verification Dashboard
+                Staff (Verifier) Dashboard
               </h1>
               <p className="text-gray-600">
                 {user?.name} - {user?.organization}
