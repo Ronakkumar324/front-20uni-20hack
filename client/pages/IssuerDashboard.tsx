@@ -67,9 +67,12 @@ export default function IssuerDashboard() {
   const [issuedCredentials, setIssuedCredentials] = useState<
     IssuedCredential[]
   >([]);
-  const [pendingRequests, setPendingRequests] = useState<CredentialRequest[]>([]);
+  const [pendingRequests, setPendingRequests] = useState<CredentialRequest[]>(
+    [],
+  );
   const [approvalFormOpen, setApprovalFormOpen] = useState(false);
-  const [selectedRequest, setSelectedRequest] = useState<CredentialRequest | null>(null);
+  const [selectedRequest, setSelectedRequest] =
+    useState<CredentialRequest | null>(null);
   const [approvalMetadata, setApprovalMetadata] = useState({
     credentialType: "",
     eventLink: "",
@@ -144,7 +147,10 @@ export default function IssuerDashboard() {
     if (!selectedRequest) return;
 
     try {
-      const { credential } = approveCredentialRequest(selectedRequest.id, approvalMetadata);
+      const { credential } = approveCredentialRequest(
+        selectedRequest.id,
+        approvalMetadata,
+      );
 
       loadIssuedCredentials();
       loadPendingRequests();
@@ -505,17 +511,30 @@ export default function IssuerDashboard() {
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <div className="flex items-center space-x-2 mb-2">
-                            <h4 className="font-semibold text-lg">{request.credentialTitle}</h4>
+                            <h4 className="font-semibold text-lg">
+                              {request.credentialTitle}
+                            </h4>
                             <Badge variant="outline" className="text-xs">
                               <Mail className="h-3 w-3 mr-1" />
                               Requested
                             </Badge>
                           </div>
-                          <p className="text-sm text-gray-600 mb-2">{request.description}</p>
+                          <p className="text-sm text-gray-600 mb-2">
+                            {request.description}
+                          </p>
                           <div className="flex items-center space-x-4 text-sm text-gray-500">
-                            <span><strong>Student:</strong> {request.studentName}</span>
-                            <span><strong>Email:</strong> {request.studentEmail}</span>
-                            <span><strong>Date:</strong> {new Date(request.requestDate).toLocaleDateString()}</span>
+                            <span>
+                              <strong>Student:</strong> {request.studentName}
+                            </span>
+                            <span>
+                              <strong>Email:</strong> {request.studentEmail}
+                            </span>
+                            <span>
+                              <strong>Date:</strong>{" "}
+                              {new Date(
+                                request.requestDate,
+                              ).toLocaleDateString()}
+                            </span>
                           </div>
                         </div>
                         <div className="flex space-x-2 ml-4">
@@ -852,16 +871,23 @@ export default function IssuerDashboard() {
           <DialogHeader>
             <DialogTitle>Approve & Issue Credential</DialogTitle>
             <DialogDescription>
-              Complete the credential details to issue it to {selectedRequest?.studentName}
+              Complete the credential details to issue it to{" "}
+              {selectedRequest?.studentName}
             </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-6">
             <div className="bg-gray-50 p-4 rounded-lg">
               <h4 className="font-semibold mb-2">Request Details</h4>
-              <p><strong>Title:</strong> {selectedRequest?.credentialTitle}</p>
-              <p><strong>Student:</strong> {selectedRequest?.studentName}</p>
-              <p><strong>Description:</strong> {selectedRequest?.description}</p>
+              <p>
+                <strong>Title:</strong> {selectedRequest?.credentialTitle}
+              </p>
+              <p>
+                <strong>Student:</strong> {selectedRequest?.studentName}
+              </p>
+              <p>
+                <strong>Description:</strong> {selectedRequest?.description}
+              </p>
             </div>
 
             <div className="space-y-4">
@@ -870,7 +896,10 @@ export default function IssuerDashboard() {
                 <Select
                   value={approvalMetadata.credentialType}
                   onValueChange={(value) =>
-                    setApprovalMetadata({ ...approvalMetadata, credentialType: value })
+                    setApprovalMetadata({
+                      ...approvalMetadata,
+                      credentialType: value,
+                    })
                   }
                 >
                   <SelectTrigger>
@@ -879,8 +908,12 @@ export default function IssuerDashboard() {
                   <SelectContent>
                     <SelectItem value="certificate">Certificate</SelectItem>
                     <SelectItem value="achievement">Achievement</SelectItem>
-                    <SelectItem value="course_completion">Course Completion</SelectItem>
-                    <SelectItem value="participation">Event Participation</SelectItem>
+                    <SelectItem value="course_completion">
+                      Course Completion
+                    </SelectItem>
+                    <SelectItem value="participation">
+                      Event Participation
+                    </SelectItem>
                     <SelectItem value="award">Award/Recognition</SelectItem>
                     <SelectItem value="degree">Degree</SelectItem>
                     <SelectItem value="diploma">Diploma</SelectItem>
@@ -896,7 +929,10 @@ export default function IssuerDashboard() {
                     placeholder="https://..."
                     value={approvalMetadata.eventLink}
                     onChange={(e) =>
-                      setApprovalMetadata({ ...approvalMetadata, eventLink: e.target.value })
+                      setApprovalMetadata({
+                        ...approvalMetadata,
+                        eventLink: e.target.value,
+                      })
                     }
                   />
                 </div>
@@ -908,25 +944,34 @@ export default function IssuerDashboard() {
                     type="date"
                     value={approvalMetadata.issueDate}
                     onChange={(e) =>
-                      setApprovalMetadata({ ...approvalMetadata, issueDate: e.target.value })
+                      setApprovalMetadata({
+                        ...approvalMetadata,
+                        issueDate: e.target.value,
+                      })
                     }
                   />
                 </div>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="approvalAdditionalMetadata">Additional Metadata (JSON)</Label>
+                <Label htmlFor="approvalAdditionalMetadata">
+                  Additional Metadata (JSON)
+                </Label>
                 <Textarea
                   id="approvalAdditionalMetadata"
                   placeholder='{"grade": "A+", "hours": "40", "skills": ["React", "TypeScript"]}'
                   value={approvalMetadata.additionalMetadata}
                   onChange={(e) =>
-                    setApprovalMetadata({ ...approvalMetadata, additionalMetadata: e.target.value })
+                    setApprovalMetadata({
+                      ...approvalMetadata,
+                      additionalMetadata: e.target.value,
+                    })
                   }
                   rows={3}
                 />
                 <p className="text-sm text-gray-500">
-                  Optional: Add custom metadata as JSON (e.g., grades, duration, skills)
+                  Optional: Add custom metadata as JSON (e.g., grades, duration,
+                  skills)
                 </p>
               </div>
             </div>
@@ -934,7 +979,8 @@ export default function IssuerDashboard() {
             <Alert>
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
-                This will issue a soulbound NFT credential to the student's wallet. This action cannot be undone.
+                This will issue a soulbound NFT credential to the student's
+                wallet. This action cannot be undone.
               </AlertDescription>
             </Alert>
 

@@ -32,7 +32,7 @@ import { useAuth } from "@/lib/auth-context";
 import {
   getCredentialsForStudent,
   submitCredentialRequest,
-  type IssuedCredential
+  type IssuedCredential,
 } from "@/lib/auth";
 import { toast } from "sonner";
 import {
@@ -195,7 +195,11 @@ export default function StudentDashboard() {
   };
 
   const handleSubmitRequest = () => {
-    if (!requestForm.issuerWalletAddress || !requestForm.credentialTitle || !user) {
+    if (
+      !requestForm.issuerWalletAddress ||
+      !requestForm.credentialTitle ||
+      !user
+    ) {
       toast.error("Incomplete Form", {
         description: "Please fill in all required fields.",
       });
@@ -230,7 +234,8 @@ export default function StudentDashboard() {
     } catch (error) {
       console.error("Failed to submit request:", error);
       toast.error("Request Failed", {
-        description: "Failed to submit your credential request. Please try again.",
+        description:
+          "Failed to submit your credential request. Please try again.",
       });
     }
   };

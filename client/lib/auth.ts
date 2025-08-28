@@ -530,7 +530,9 @@ export function getPendingRequestsForIssuer(
   issuerWalletAddress: string,
 ): CredentialRequest[] {
   return getCredentialRequests().filter(
-    (req) => req.issuerWalletAddress === issuerWalletAddress && req.status === "pending",
+    (req) =>
+      req.issuerWalletAddress === issuerWalletAddress &&
+      req.status === "pending",
   );
 }
 
@@ -598,7 +600,7 @@ export function rejectCredentialRequest(
   requests[requestIndex] = {
     ...request,
     status: "rejected",
-    rejectionNote: rejectionNote || "Request was rejected"
+    rejectionNote: rejectionNote || "Request was rejected",
   };
   localStorage.setItem(CREDENTIAL_REQUESTS_KEY, JSON.stringify(requests));
 
