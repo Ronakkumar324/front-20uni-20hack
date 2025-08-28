@@ -29,7 +29,11 @@ import {
   handleUrlError,
 } from "@/lib/url-utils";
 import { useAuth } from "@/lib/auth-context";
-import { getCredentialsForStudent, type IssuedCredential } from "@/lib/auth";
+import {
+  getCredentialsForStudent,
+  submitCredentialRequest,
+  type IssuedCredential
+} from "@/lib/auth";
 import { toast } from "sonner";
 import {
   Shield,
@@ -191,26 +195,44 @@ export default function StudentDashboard() {
   };
 
   const handleSubmitRequest = () => {
-    if (!requestForm.issuerWalletAddress || !requestForm.credentialTitle) {
+    if (!requestForm.issuerWalletAddress || !requestForm.credentialTitle || !user) {
       toast.error("Incomplete Form", {
         description: "Please fill in all required fields.",
       });
       return;
     }
 
-    // In a real app, this would send a request to the issuer
-    toast.success("Request Sent!", {
-      description: `Your credential request has been sent to ${requestForm.issuerName || "the issuer"}. They will review and issue the credential if approved.`,
-    });
+    try {
+      // Submit the credential request using the new system
+      const newRequest = submitCredentialRequest({
+        studentName: user.name,
+        studentEmail: user.email,
+        studentWalletAddress: user.walletAddress,
+        issuerWalletAddress: requestForm.issuerWalletAddress,
+        issuerName: requestForm.issuerName,
+        issuerInstitution: requestForm.issuerName, // Using name as institution for now
+        credentialTitle: requestForm.credentialTitle,
+        description: requestForm.description || "",
+      });
 
-    // Reset form and close modal
-    setRequestForm({
-      issuerWalletAddress: "",
-      credentialTitle: "",
-      description: "",
-      issuerName: "",
-    });
-    setRequestModalOpen(false);
+      toast.success("Request Sent!", {
+        description: `Your credential request has been sent to ${requestForm.issuerName}. They will review and issue the credential if approved.`,
+      });
+
+      // Reset form and close modal
+      setRequestForm({
+        issuerWalletAddress: "",
+        credentialTitle: "",
+        description: "",
+        issuerName: "",
+      });
+      setRequestModalOpen(false);
+    } catch (error) {
+      console.error("Failed to submit request:", error);
+      toast.error("Request Failed", {
+        description: "Failed to submit your credential request. Please try again.",
+      });
+    }
   };
 
   const handleGenerateQR = (credential: IssuedCredential) => {
