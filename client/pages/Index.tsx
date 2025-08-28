@@ -243,13 +243,13 @@ export default function Index() {
                     <Shield className="h-12 w-12 text-green-500 mb-4 mx-auto group-hover:scale-110 transition-transform" />
                     <CardTitle>Staff (Verifier)</CardTitle>
                     <CardDescription>
-                      Verify student credentials on behalf of your organization.
-                      Check and validate academic achievements.
+                      Verify student credentials and manage verification tasks.
+                      Access the unified staff dashboard for all verification activities.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
                     <Button className="w-full" variant="outline">
-                      Register as Staff
+                      Register as Staff (Verifier)
                     </Button>
                   </CardContent>
                 </Link>
