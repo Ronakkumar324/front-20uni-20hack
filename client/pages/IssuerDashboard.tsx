@@ -94,14 +94,72 @@ export default function IssuerDashboard() {
       return;
     }
 
-    // Load issued credentials
+    // Load issued credentials and pending requests
     loadIssuedCredentials();
+    loadPendingRequests();
   }, [user, isAuthenticated, navigate]);
 
   const loadIssuedCredentials = () => {
     if (user?.walletAddress) {
       const credentials = getCredentialsByIssuer(user.walletAddress);
       setIssuedCredentials(credentials);
+    }
+  };
+
+  const loadPendingRequests = () => {
+    if (user?.walletAddress) {
+      const requests = getPendingRequestsForIssuer(user.walletAddress);
+      setPendingRequests(requests);
+    }
+  };
+
+  const handleApproveRequest = (request: CredentialRequest) => {
+    setSelectedRequest(request);
+    setApprovalFormOpen(true);
+  };
+
+  const handleRejectRequest = async (requestId: string) => {
+    try {
+      rejectCredentialRequest(requestId, "Request was rejected by the issuer");
+      loadPendingRequests();
+      toast.success("Request Rejected", {
+        description: "The credential request has been rejected.",
+      });
+    } catch (error) {
+      console.error("Failed to reject request:", error);
+      toast.error("Failed to Reject", {
+        description: "Could not reject the request. Please try again.",
+      });
+    }
+  };
+
+  const handleCompleteApproval = async () => {
+    if (!selectedRequest) return;
+
+    try {
+      const { credential } = approveCredentialRequest(selectedRequest.id, approvalMetadata);
+
+      loadIssuedCredentials();
+      loadPendingRequests();
+
+      // Reset approval form
+      setApprovalFormOpen(false);
+      setSelectedRequest(null);
+      setApprovalMetadata({
+        credentialType: "",
+        eventLink: "",
+        issueDate: "",
+        additionalMetadata: "",
+      });
+
+      toast.success("Credential Issued!", {
+        description: `The credential "${credential.title}" has been issued to ${selectedRequest.studentName}.`,
+      });
+    } catch (error) {
+      console.error("Failed to approve request:", error);
+      toast.error("Failed to Issue Credential", {
+        description: "Could not issue the credential. Please try again.",
+      });
     }
   };
 
