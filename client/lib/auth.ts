@@ -60,6 +60,7 @@ export interface StoredUser {
 const USER_PROFILE_KEY = "credvault_user_profile";
 const ISSUED_CREDENTIALS_KEY = "credvault_issued_credentials";
 const REGISTERED_USERS_KEY = "credvault_registered_users";
+const CREDENTIAL_REQUESTS_KEY = "credvault_credential_requests";
 
 /**
  * Save user profile to localStorage
@@ -417,6 +418,24 @@ export interface IssuedCredential {
 }
 
 /**
+ * Credential request interface
+ */
+export interface CredentialRequest {
+  id: string;
+  studentName: string;
+  studentEmail: string;
+  studentWalletAddress: string;
+  issuerWalletAddress: string;
+  issuerName: string;
+  issuerInstitution: string;
+  credentialTitle: string;
+  description: string;
+  requestDate: string;
+  status: "pending" | "approved" | "rejected";
+  rejectionNote?: string;
+}
+
+/**
  * Save issued credential
  */
 export function saveIssuedCredential(
@@ -469,4 +488,119 @@ export function getCredentialsForStudent(
   return getIssuedCredentials().filter(
     (cred) => cred.studentWalletAddress === studentWalletAddress,
   );
+}
+
+/**
+ * Submit a credential request
+ */
+export function submitCredentialRequest(
+  request: Omit<CredentialRequest, "id" | "requestDate" | "status">,
+): CredentialRequest {
+  const newRequest: CredentialRequest = {
+    ...request,
+    id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    requestDate: new Date().toISOString(),
+    status: "pending",
+  };
+
+  const existing = getCredentialRequests();
+  existing.push(newRequest);
+  localStorage.setItem(CREDENTIAL_REQUESTS_KEY, JSON.stringify(existing));
+
+  return newRequest;
+}
+
+/**
+ * Get all credential requests
+ */
+export function getCredentialRequests(): CredentialRequest[] {
+  try {
+    const stored = localStorage.getItem(CREDENTIAL_REQUESTS_KEY);
+    return stored ? JSON.parse(stored) : [];
+  } catch (error) {
+    console.error("Error reading credential requests:", error);
+    return [];
+  }
+}
+
+/**
+ * Get pending requests for a specific issuer
+ */
+export function getPendingRequestsForIssuer(
+  issuerWalletAddress: string,
+): CredentialRequest[] {
+  return getCredentialRequests().filter(
+    (req) => req.issuerWalletAddress === issuerWalletAddress && req.status === "pending",
+  );
+}
+
+/**
+ * Approve a credential request and issue the credential
+ */
+export function approveCredentialRequest(
+  requestId: string,
+  metadata: {
+    credentialType?: string;
+    eventLink?: string;
+    issueDate?: string;
+    additionalMetadata?: string;
+  },
+): { request: CredentialRequest; credential: IssuedCredential } {
+  const requests = getCredentialRequests();
+  const requestIndex = requests.findIndex((req) => req.id === requestId);
+
+  if (requestIndex === -1) {
+    throw new Error("Request not found");
+  }
+
+  const request = requests[requestIndex];
+  if (request.status !== "pending") {
+    throw new Error("Request is not pending");
+  }
+
+  // Update request status
+  requests[requestIndex] = { ...request, status: "approved" };
+  localStorage.setItem(CREDENTIAL_REQUESTS_KEY, JSON.stringify(requests));
+
+  // Issue the credential
+  const credential = saveIssuedCredential({
+    title: request.credentialTitle,
+    description: request.description,
+    studentWalletAddress: request.studentWalletAddress,
+    issuerWalletAddress: request.issuerWalletAddress,
+    issuerName: request.issuerName,
+    issuerInstitution: request.issuerInstitution,
+  });
+
+  return { request: requests[requestIndex], credential };
+}
+
+/**
+ * Reject a credential request
+ */
+export function rejectCredentialRequest(
+  requestId: string,
+  rejectionNote?: string,
+): CredentialRequest {
+  const requests = getCredentialRequests();
+  const requestIndex = requests.findIndex((req) => req.id === requestId);
+
+  if (requestIndex === -1) {
+    throw new Error("Request not found");
+  }
+
+  const request = requests[requestIndex];
+  if (request.status !== "pending") {
+    throw new Error("Request is not pending");
+  }
+
+  // Update request status
+  requests[requestIndex] = {
+    ...request,
+    status: "rejected",
+    rejectionNote: rejectionNote || "Request was rejected"
+  };
+  localStorage.setItem(CREDENTIAL_REQUESTS_KEY, JSON.stringify(requests));
+
+  return requests[requestIndex];
 }
