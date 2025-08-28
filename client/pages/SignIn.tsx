@@ -60,9 +60,6 @@ export default function SignIn() {
               <Link to="/" className="text-gray-700 hover:text-primary">
                 Home
               </Link>
-              <Link to="/verify" className="text-gray-700 hover:text-primary">
-                Verify
-              </Link>
               <Link to="/register" className="text-gray-700 hover:text-primary">
                 Register
               </Link>
@@ -146,8 +143,8 @@ export default function SignIn() {
               <Button onClick={() => navigate("/register")}>
                 Register New Account
               </Button>
-              <Button variant="outline" onClick={() => navigate("/verify")}>
-                Just Verify Credentials
+              <Button variant="outline" onClick={() => navigate("/signin/staff")}>
+                Staff (Verifier) Sign In
               </Button>
             </div>
           </div>
