@@ -845,6 +845,118 @@ export default function IssuerDashboard() {
           </div>
         </div>
       </div>
+
+      {/* Approval Form Dialog */}
+      <Dialog open={approvalFormOpen} onOpenChange={setApprovalFormOpen}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Approve & Issue Credential</DialogTitle>
+            <DialogDescription>
+              Complete the credential details to issue it to {selectedRequest?.studentName}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            <div className="bg-gray-50 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2">Request Details</h4>
+              <p><strong>Title:</strong> {selectedRequest?.credentialTitle}</p>
+              <p><strong>Student:</strong> {selectedRequest?.studentName}</p>
+              <p><strong>Description:</strong> {selectedRequest?.description}</p>
+            </div>
+
+            <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="approvalCredentialType">Credential Type</Label>
+                <Select
+                  value={approvalMetadata.credentialType}
+                  onValueChange={(value) =>
+                    setApprovalMetadata({ ...approvalMetadata, credentialType: value })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="certificate">Certificate</SelectItem>
+                    <SelectItem value="achievement">Achievement</SelectItem>
+                    <SelectItem value="course_completion">Course Completion</SelectItem>
+                    <SelectItem value="participation">Event Participation</SelectItem>
+                    <SelectItem value="award">Award/Recognition</SelectItem>
+                    <SelectItem value="degree">Degree</SelectItem>
+                    <SelectItem value="diploma">Diploma</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="approvalEventLink">Event/Course Link</Label>
+                  <Input
+                    id="approvalEventLink"
+                    placeholder="https://..."
+                    value={approvalMetadata.eventLink}
+                    onChange={(e) =>
+                      setApprovalMetadata({ ...approvalMetadata, eventLink: e.target.value })
+                    }
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="approvalIssueDate">Issue Date</Label>
+                  <Input
+                    id="approvalIssueDate"
+                    type="date"
+                    value={approvalMetadata.issueDate}
+                    onChange={(e) =>
+                      setApprovalMetadata({ ...approvalMetadata, issueDate: e.target.value })
+                    }
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="approvalAdditionalMetadata">Additional Metadata (JSON)</Label>
+                <Textarea
+                  id="approvalAdditionalMetadata"
+                  placeholder='{"grade": "A+", "hours": "40", "skills": ["React", "TypeScript"]}'
+                  value={approvalMetadata.additionalMetadata}
+                  onChange={(e) =>
+                    setApprovalMetadata({ ...approvalMetadata, additionalMetadata: e.target.value })
+                  }
+                  rows={3}
+                />
+                <p className="text-sm text-gray-500">
+                  Optional: Add custom metadata as JSON (e.g., grades, duration, skills)
+                </p>
+              </div>
+            </div>
+
+            <Alert>
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription>
+                This will issue a soulbound NFT credential to the student's wallet. This action cannot be undone.
+              </AlertDescription>
+            </Alert>
+
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                onClick={() => setApprovalFormOpen(false)}
+                className="w-full"
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleCompleteApproval}
+                className="w-full bg-green-600 hover:bg-green-700"
+              >
+                <Send className="h-4 w-4 mr-2" />
+                Issue Credential
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
