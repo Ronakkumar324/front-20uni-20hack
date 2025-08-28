@@ -9,6 +9,8 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
+import { seedTestUsers, testUsersExist, TEST_CREDENTIALS } from "@/lib/seed-data";
+import { toast } from "sonner";
 import {
   Shield,
   Award,
@@ -19,6 +21,7 @@ import {
   UserPlus,
   LogOut,
   ChevronDown,
+  TestTube,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -28,9 +31,22 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert";
 
 export default function Index() {
   const { user, isAuthenticated, logout } = useAuth();
+  const hasTestUsers = testUsersExist();
+
+  const handleSeedTestUsers = () => {
+    seedTestUsers();
+    toast.success("Test users created!", {
+      description: "You can now sign in with the test credentials below.",
+    });
+  };
 
   const getRoleDashboardPath = () => {
     if (!user) return "/register";
@@ -326,6 +342,108 @@ export default function Index() {
           </div>
         </div>
       </section>
+
+      {/* Test Credentials Section (Development Helper) */}
+      {!isAuthenticated && (
+        <section className="py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <Alert className="mb-8 border-blue-200 bg-blue-50">
+              <TestTube className="h-4 w-4" />
+              <AlertTitle>Testing & Development</AlertTitle>
+              <AlertDescription>
+                Need test credentials to try the sign-in functionality? Click below to create sample users.
+              </AlertDescription>
+            </Alert>
+
+            <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <TestTube className="h-5 w-5 text-blue-600" />
+                  <span>Test Credentials</span>
+                </CardTitle>
+                <CardDescription>
+                  Use these credentials to test the sign-in functionality for different roles.
+                </CardDescription>
+              </CardHeader>
+
+              <CardContent className="space-y-6">
+                {!hasTestUsers && (
+                  <div className="text-center p-4 bg-white/60 rounded-lg border border-blue-200">
+                    <Button onClick={handleSeedTestUsers} className="mb-4">
+                      <TestTube className="h-4 w-4 mr-2" />
+                      Create Test Users
+                    </Button>
+                    <p className="text-sm text-gray-600">
+                      Click above to create sample users for testing
+                    </p>
+                  </div>
+                )}
+
+                {hasTestUsers && (
+                  <div className="grid md:grid-cols-3 gap-4">
+                    <div className="bg-white/80 p-4 rounded-lg border">
+                      <h4 className="font-semibold text-blue-800 mb-2 flex items-center">
+                        <Users className="h-4 w-4 mr-2" />
+                        Student
+                      </h4>
+                      <div className="space-y-1 text-sm">
+                        <p><strong>Email:</strong> student@test.com</p>
+                        <p><strong>Wallet:</strong> 0x1234...5678</p>
+                        <p className="text-xs text-gray-600 mt-2">
+                          Requires both email + wallet address
+                        </p>
+                      </div>
+                      <Button size="sm" variant="outline" className="w-full mt-3" asChild>
+                        <Link to="/signin/student">Student Sign In</Link>
+                      </Button>
+                    </div>
+
+                    <div className="bg-white/80 p-4 rounded-lg border">
+                      <h4 className="font-semibold text-green-800 mb-2 flex items-center">
+                        <Shield className="h-4 w-4 mr-2" />
+                        Staff (Verifier)
+                      </h4>
+                      <div className="space-y-1 text-sm">
+                        <p><strong>Email:</strong> staff@university.edu</p>
+                        <p><strong>Org:</strong> Tech University</p>
+                        <p className="text-xs text-gray-600 mt-2">
+                          Requires only email address
+                        </p>
+                      </div>
+                      <Button size="sm" variant="outline" className="w-full mt-3" asChild>
+                        <Link to="/signin/staff">Staff Sign In</Link>
+                      </Button>
+                    </div>
+
+                    <div className="bg-white/80 p-4 rounded-lg border">
+                      <h4 className="font-semibold text-purple-800 mb-2 flex items-center">
+                        <Award className="h-4 w-4 mr-2" />
+                        Issuer
+                      </h4>
+                      <div className="space-y-1 text-sm">
+                        <p><strong>Email:</strong> issuer@techacademy.edu</p>
+                        <p><strong>Institution:</strong> TechAcademy</p>
+                        <p className="text-xs text-gray-600 mt-2">
+                          Requires only email address
+                        </p>
+                      </div>
+                      <Button size="sm" variant="outline" className="w-full mt-3" asChild>
+                        <Link to="/signin/issuer">Issuer Sign In</Link>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+
+                <div className="text-center">
+                  <p className="text-xs text-gray-600">
+                    💡 Tip: Students need both email and wallet address, while Staff and Issuers only need email
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </section>
+      )}
 
       {/* How It Works */}
       <section className="py-16 px-4 sm:px-6 lg:px-8 bg-white/50">
