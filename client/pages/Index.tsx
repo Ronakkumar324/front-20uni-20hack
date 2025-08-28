@@ -194,7 +194,7 @@ export default function Index() {
                     <Link to="/register/student">Get Started as Student</Link>
                   </Button>
                   <Button size="lg" variant="outline" asChild>
-                    <Link to="/verify">Verify Credentials</Link>
+                    <Link to="/signin/staff">Verify Credentials</Link>
                   </Button>
                 </>
               )}
