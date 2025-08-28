@@ -169,9 +169,6 @@ export default function StaffDashboard() {
                 </Badge>
               </div>
               <div className="flex items-center space-x-4">
-                <Link to="/verify" className="text-gray-700 hover:text-primary">
-                  Verify
-                </Link>
                 <Link
                   to="/student"
                   className="text-gray-700 hover:text-primary"
@@ -250,9 +247,6 @@ export default function StaffDashboard() {
               <span className="text-xs text-gray-500">
                 {user?.organization}
               </span>
-              <Link to="/verify" className="text-gray-700 hover:text-primary">
-                Verify
-              </Link>
               <Link to="/student" className="text-gray-700 hover:text-primary">
                 Student
               </Link>
