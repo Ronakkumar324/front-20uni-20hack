@@ -72,9 +72,6 @@ export default function Registration() {
               <Link to="/" className="text-gray-700 hover:text-primary">
                 Home
               </Link>
-              <Link to="/verify" className="text-gray-700 hover:text-primary">
-                Verify
-              </Link>
             </div>
           </div>
         </div>
@@ -164,7 +161,7 @@ export default function Registration() {
                 variant="outline"
                 onClick={() => navigate("/signin/staff")}
               >
-                Staff Sign In
+                Staff (Verifier) Sign In
               </Button>
               <Button
                 variant="outline"
