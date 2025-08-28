@@ -18,7 +18,16 @@ import {
   CheckCircle,
   UserPlus,
   LogOut,
+  ChevronDown,
 } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 export default function Index() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -69,13 +78,10 @@ export default function Index() {
                 Student
               </Link>
               <Link to="/staff" className="text-gray-700 hover:text-primary">
-                Staff
+                Staff (Verifier)
               </Link>
               <Link to="/issuer" className="text-gray-700 hover:text-primary">
                 Issuer
-              </Link>
-              <Link to="/verify" className="text-gray-700 hover:text-primary">
-                Verify
               </Link>
 
               {isAuthenticated ? (
