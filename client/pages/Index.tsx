@@ -100,18 +100,49 @@ export default function Index() {
                 </div>
               ) : (
                 <div className="flex items-center space-x-2">
-                  <Button variant="outline" asChild>
-                    <Link to="/signin">Sign In</Link>
-                  </Button>
-                  <Button variant="outline" asChild>
-                    <Link to="/register">
-                      <UserPlus className="h-4 w-4 mr-2" />
-                      Register
-                    </Link>
-                  </Button>
-                  <Button className="bg-primary hover:bg-primary/90" asChild>
-                    <Link to="/register">Get Started</Link>
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button className="bg-primary hover:bg-primary/90">
+                        Get Started
+                        <ChevronDown className="h-4 w-4 ml-2" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end" className="w-56">
+                      <DropdownMenuLabel>Sign In</DropdownMenuLabel>
+                      <DropdownMenuItem asChild>
+                        <Link to="/signin/student" className="cursor-pointer">
+                          Student Sign In
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/signin/staff" className="cursor-pointer">
+                          Staff (Verifier) Sign In
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/signin/issuer" className="cursor-pointer">
+                          Issuer Sign In
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuLabel>Register</DropdownMenuLabel>
+                      <DropdownMenuItem asChild>
+                        <Link to="/register/student" className="cursor-pointer">
+                          Student Register
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/register/staff" className="cursor-pointer">
+                          Staff (Verifier) Register
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem asChild>
+                        <Link to="/register/issuer" className="cursor-pointer">
+                          Issuer Register
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               )}
             </div>
