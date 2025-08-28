@@ -320,10 +320,11 @@ export default function StudentDashboard() {
             <div className="flex justify-between items-center h-16">
               <div className="flex items-center space-x-2">
                 <Link to="/" className="flex items-center space-x-2">
-                  <Shield className="h-8 w-8 text-primary" />
-                  <span className="font-bold text-xl text-gray-900">
-                    CredVault
-                  </span>
+                  <img
+                    src="https://cdn.builder.io/api/v1/image/assets%2F3b9f4625fce44be98ad7372162d270d4%2F992deceba13b40919d5622915996ada9?format=webp&width=800"
+                    alt="Global Cread APEX"
+                    className="h-8 w-auto"
+                  />
                 </Link>
                 <Badge variant="secondary" className="ml-2">
                   Student
@@ -389,10 +390,11 @@ export default function StudentDashboard() {
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center space-x-2">
               <Link to="/" className="flex items-center space-x-2">
-                <Shield className="h-8 w-8 text-primary" />
-                <span className="font-bold text-xl text-gray-900">
-                  CredVault
-                </span>
+                <img
+                  src="https://cdn.builder.io/api/v1/image/assets%2F3b9f4625fce44be98ad7372162d270d4%2F992deceba13b40919d5622915996ada9?format=webp&width=800"
+                  alt="Global Cread APEX"
+                  className="h-8 w-auto"
+                />
               </Link>
               <Badge variant="secondary" className="ml-2">
                 Student
