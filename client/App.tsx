@@ -9,7 +9,6 @@ import Index from "./pages/Index";
 import StudentDashboard from "./pages/StudentDashboard";
 import StaffDashboard from "./pages/StaffDashboard";
 import IssuerDashboard from "./pages/IssuerDashboard";
-import VerificationPage from "./pages/VerificationPage";
 import Registration from "./pages/Registration";
 import StudentRegistration from "./pages/StudentRegistration";
 import StaffRegistration from "./pages/StaffRegistration";
@@ -38,7 +37,6 @@ export default function App() {
               <Route path="/" element={<Index />} />
               <Route path="/student" element={<StudentDashboard />} />
               <Route path="/issuer" element={<IssuerDashboard />} />
-              <Route path="/verify" element={<VerificationPage />} />
 
               {/* Registration Routes */}
               <Route path="/register" element={<Registration />} />
