@@ -464,17 +464,12 @@ export default function Index() {
                 </li>
                 <li>
                   <Link to="/staff" className="hover:text-primary">
-                    Staff Dashboard
+                    Staff (Verifier) Dashboard
                   </Link>
                 </li>
                 <li>
                   <Link to="/issuer" className="hover:text-primary">
                     Issuer Portal
-                  </Link>
-                </li>
-                <li>
-                  <Link to="/verify" className="hover:text-primary">
-                    Verify Credentials
                   </Link>
                 </li>
               </ul>
@@ -500,7 +495,7 @@ export default function Index() {
                 </li>
                 <li>
                   <Link to="/signin/staff" className="hover:text-primary">
-                    Staff Sign In
+                    Staff (Verifier) Sign In
                   </Link>
                 </li>
                 <li>
