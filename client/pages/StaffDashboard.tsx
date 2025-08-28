@@ -165,7 +165,7 @@ export default function StaffDashboard() {
                   </span>
                 </Link>
                 <Badge variant="secondary" className="ml-2">
-                  Staff
+                  Staff (Verifier)
                 </Badge>
               </div>
               <div className="flex items-center space-x-4">
@@ -237,7 +237,7 @@ export default function StaffDashboard() {
                 </span>
               </Link>
               <Badge variant="secondary" className="ml-2">
-                Staff
+                Staff (Verifier)
               </Badge>
             </div>
             <div className="flex items-center space-x-4">
