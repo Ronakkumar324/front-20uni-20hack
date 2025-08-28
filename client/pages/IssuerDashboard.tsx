@@ -25,8 +25,12 @@ import { useAuth } from "@/lib/auth-context";
 import {
   saveIssuedCredential,
   getCredentialsByIssuer,
+  getPendingRequestsForIssuer,
+  approveCredentialRequest,
+  rejectCredentialRequest,
   isValidWallet,
   type IssuedCredential,
+  type CredentialRequest,
 } from "@/lib/auth";
 import { toast } from "sonner";
 import {
@@ -44,6 +48,9 @@ import {
   UserPlus,
   Eye,
   Hash,
+  Clock,
+  X,
+  Mail,
 } from "lucide-react";
 
 export default function IssuerDashboard() {
@@ -53,6 +60,15 @@ export default function IssuerDashboard() {
   const [issuedCredentials, setIssuedCredentials] = useState<
     IssuedCredential[]
   >([]);
+  const [pendingRequests, setPendingRequests] = useState<CredentialRequest[]>([]);
+  const [approvalFormOpen, setApprovalFormOpen] = useState(false);
+  const [selectedRequest, setSelectedRequest] = useState<CredentialRequest | null>(null);
+  const [approvalMetadata, setApprovalMetadata] = useState({
+    credentialType: "",
+    eventLink: "",
+    issueDate: "",
+    additionalMetadata: "",
+  });
   const [formData, setFormData] = useState({
     recipientAddress: "",
     credentialTitle: "",
