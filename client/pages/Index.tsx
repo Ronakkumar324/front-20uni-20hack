@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/lib/auth-context";
-import { seedTestUsers, testUsersExist, TEST_CREDENTIALS } from "@/lib/seed-data";
+import {
+  seedTestUsers,
+  testUsersExist,
+  TEST_CREDENTIALS,
+} from "@/lib/seed-data";
 import { toast } from "sonner";
 import {
   Shield,
@@ -31,11 +35,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Index() {
   const { user, isAuthenticated, logout } = useAuth();
@@ -260,7 +260,8 @@ export default function Index() {
                     <CardTitle>Staff (Verifier)</CardTitle>
                     <CardDescription>
                       Verify student credentials and manage verification tasks.
-                      Access the unified staff dashboard for all verification activities.
+                      Access the unified staff dashboard for all verification
+                      activities.
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -351,7 +352,8 @@ export default function Index() {
               <TestTube className="h-4 w-4" />
               <AlertTitle>Testing & Development</AlertTitle>
               <AlertDescription>
-                Need test credentials to try the sign-in functionality? Click below to create sample users.
+                Need test credentials to try the sign-in functionality? Click
+                below to create sample users.
               </AlertDescription>
             </Alert>
 
@@ -362,7 +364,8 @@ export default function Index() {
                   <span>Test Credentials</span>
                 </CardTitle>
                 <CardDescription>
-                  Use these credentials to test the sign-in functionality for different roles.
+                  Use these credentials to test the sign-in functionality for
+                  different roles.
                 </CardDescription>
               </CardHeader>
 
@@ -387,13 +390,22 @@ export default function Index() {
                         Student
                       </h4>
                       <div className="space-y-1 text-sm">
-                        <p><strong>Email:</strong> student@test.com</p>
-                        <p><strong>Wallet:</strong> 0x1234...5678</p>
+                        <p>
+                          <strong>Email:</strong> student@test.com
+                        </p>
+                        <p>
+                          <strong>Wallet:</strong> 0x1234...5678
+                        </p>
                         <p className="text-xs text-gray-600 mt-2">
                           Requires both email + wallet address
                         </p>
                       </div>
-                      <Button size="sm" variant="outline" className="w-full mt-3" asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full mt-3"
+                        asChild
+                      >
                         <Link to="/signin/student">Student Sign In</Link>
                       </Button>
                     </div>
@@ -404,13 +416,22 @@ export default function Index() {
                         Staff (Verifier)
                       </h4>
                       <div className="space-y-1 text-sm">
-                        <p><strong>Email:</strong> staff@university.edu</p>
-                        <p><strong>Org:</strong> Tech University</p>
+                        <p>
+                          <strong>Email:</strong> staff@university.edu
+                        </p>
+                        <p>
+                          <strong>Org:</strong> Tech University
+                        </p>
                         <p className="text-xs text-gray-600 mt-2">
                           Requires only email address
                         </p>
                       </div>
-                      <Button size="sm" variant="outline" className="w-full mt-3" asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full mt-3"
+                        asChild
+                      >
                         <Link to="/signin/staff">Staff Sign In</Link>
                       </Button>
                     </div>
@@ -421,13 +442,22 @@ export default function Index() {
                         Issuer
                       </h4>
                       <div className="space-y-1 text-sm">
-                        <p><strong>Email:</strong> issuer@techacademy.edu</p>
-                        <p><strong>Institution:</strong> TechAcademy</p>
+                        <p>
+                          <strong>Email:</strong> issuer@techacademy.edu
+                        </p>
+                        <p>
+                          <strong>Institution:</strong> TechAcademy
+                        </p>
                         <p className="text-xs text-gray-600 mt-2">
                           Requires only email address
                         </p>
                       </div>
-                      <Button size="sm" variant="outline" className="w-full mt-3" asChild>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="w-full mt-3"
+                        asChild
+                      >
                         <Link to="/signin/issuer">Issuer Sign In</Link>
                       </Button>
                     </div>
@@ -436,7 +466,8 @@ export default function Index() {
 
                 <div className="text-center">
                   <p className="text-xs text-gray-600">
-                    💡 Tip: Students need both email and wallet address, while Staff and Issuers only need email
+                    💡 Tip: Students need both email and wallet address, while
+                    Staff and Issuers only need email
                   </p>
                 </div>
               </CardContent>

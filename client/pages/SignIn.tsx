@@ -143,7 +143,10 @@ export default function SignIn() {
               <Button onClick={() => navigate("/register")}>
                 Register New Account
               </Button>
-              <Button variant="outline" onClick={() => navigate("/signin/staff")}>
+              <Button
+                variant="outline"
+                onClick={() => navigate("/signin/staff")}
+              >
                 Staff (Verifier) Sign In
               </Button>
             </div>

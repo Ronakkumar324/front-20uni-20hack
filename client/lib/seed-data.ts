@@ -11,16 +11,16 @@ export const TEST_CREDENTIALS = {
   student: {
     email: "student@test.com",
     walletAddress: "0x1234567890abcdef1234567890abcdef12345678",
-    password: "Not needed - just use email + wallet"
+    password: "Not needed - just use email + wallet",
   },
   staff: {
     email: "staff@university.edu",
-    password: "Not needed - just use email"
+    password: "Not needed - just use email",
   },
   issuer: {
-    email: "issuer@techacademy.edu", 
-    password: "Not needed - just use email"
-  }
+    email: "issuer@techacademy.edu",
+    password: "Not needed - just use email",
+  },
 };
 
 /**
@@ -37,7 +37,7 @@ export function seedTestUsers(): void {
       createdAt: new Date().toISOString(),
     },
     {
-      id: "test_staff_001", 
+      id: "test_staff_001",
       name: "Sarah Verifier",
       email: "staff@university.edu",
       walletAddress: "0xabcdef1234567890abcdef1234567890abcdef12",
@@ -47,21 +47,21 @@ export function seedTestUsers(): void {
     },
     {
       id: "test_issuer_001",
-      name: "Dr. Michael Issuer", 
+      name: "Dr. Michael Issuer",
       email: "issuer@techacademy.edu",
       walletAddress: "0x9876543210fedcba9876543210fedcba98765432",
       role: "issuer",
       institution: "TechAcademy Institute",
       createdAt: new Date().toISOString(),
-    }
+    },
   ];
 
   // Get existing users
   const existing = getRegisteredUsers();
-  
+
   // Add test users if they don't already exist
-  testUsers.forEach(testUser => {
-    const existingUser = existing.find(u => u.email === testUser.email);
+  testUsers.forEach((testUser) => {
+    const existingUser = existing.find((u) => u.email === testUser.email);
     if (!existingUser) {
       existing.push(testUser);
     }
@@ -69,7 +69,7 @@ export function seedTestUsers(): void {
 
   // Save updated users list
   localStorage.setItem(REGISTERED_USERS_KEY, JSON.stringify(existing));
-  
+
   console.log("✅ Test users seeded successfully!");
   console.log("Test credentials:", TEST_CREDENTIALS);
 }
@@ -102,7 +102,9 @@ export function clearTestData(): void {
  */
 export function testUsersExist(): boolean {
   const users = getRegisteredUsers();
-  return users.some(u => u.email === "student@test.com") &&
-         users.some(u => u.email === "staff@university.edu") &&
-         users.some(u => u.email === "issuer@techacademy.edu");
+  return (
+    users.some((u) => u.email === "student@test.com") &&
+    users.some((u) => u.email === "staff@university.edu") &&
+    users.some((u) => u.email === "issuer@techacademy.edu")
+  );
 }
