@@ -472,6 +472,72 @@ export default function IssuerDashboard() {
           </div>
         </div>
 
+        {/* Pending Requests Section */}
+        {pendingRequests.length > 0 && (
+          <div className="mb-8">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center space-x-2">
+                  <Clock className="h-5 w-5 text-yellow-600" />
+                  <span>Pending Requests from Students</span>
+                  <Badge className="bg-yellow-100 text-yellow-800">
+                    {pendingRequests.length}
+                  </Badge>
+                </CardTitle>
+                <CardDescription>
+                  Review and approve credential requests from students
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {pendingRequests.map((request) => (
+                    <div
+                      key={request.id}
+                      className="border rounded-lg p-4 bg-yellow-50 border-yellow-200"
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center space-x-2 mb-2">
+                            <h4 className="font-semibold text-lg">{request.credentialTitle}</h4>
+                            <Badge variant="outline" className="text-xs">
+                              <Mail className="h-3 w-3 mr-1" />
+                              Requested
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-gray-600 mb-2">{request.description}</p>
+                          <div className="flex items-center space-x-4 text-sm text-gray-500">
+                            <span><strong>Student:</strong> {request.studentName}</span>
+                            <span><strong>Email:</strong> {request.studentEmail}</span>
+                            <span><strong>Date:</strong> {new Date(request.requestDate).toLocaleDateString()}</span>
+                          </div>
+                        </div>
+                        <div className="flex space-x-2 ml-4">
+                          <Button
+                            size="sm"
+                            onClick={() => handleApproveRequest(request)}
+                            className="bg-green-600 hover:bg-green-700 text-white"
+                          >
+                            <CheckCircle className="h-4 w-4 mr-2" />
+                            Approve & Issue NFT
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="destructive"
+                            onClick={() => handleRejectRequest(request.id)}
+                          >
+                            <X className="h-4 w-4 mr-2" />
+                            Reject
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
+
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Mint Credential Form */}
           <div className="lg:col-span-2">
